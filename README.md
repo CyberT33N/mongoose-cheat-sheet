@@ -64,7 +64,6 @@ db.once('open', createSchema);
 
 
 /* ---- METHOD #2 - Callback ---- */
-// alternative
 mongoose.connect('mongodb://localhost/test', connOptions, connOpen)
 
 const connOpen = async e => {
