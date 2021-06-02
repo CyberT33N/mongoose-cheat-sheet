@@ -44,7 +44,9 @@ ___________________________________________
 
 <br><br>
 
+
 ## .connect()
+
 ```javascript
 const mongoose = require('mongoose');
 // poolSize ist the amount of connections we allow
@@ -73,120 +75,6 @@ const connOpen = async e => {
 
 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<br><br>
-___________________________________________
-___________________________________________
-<br><br>
-
-
-# Connection
-
-<br><br>
-
-## .connect()
-```javascript
-
-<br><br>
-___________________________________________
-___________________________________________
-<br><br>
-
-
-# Connection
-
-<br><br>
-
-## .connect()
-```javascript
-
-
-
-
-// --------------------------------------------------------------------- //
-
-
-
-
-const createSchema = async () => {
-  // With Mongoose, everything is derived from a Schema. Let's get a reference to it and define our kittens.
-  const kittySchema = new mongoose.Schema({
-    name: String
-  });
-  
-  // So far so good. We've got a schema with one property, name, which will be a String. The next step is compiling our schema into a Model.
-  const Kitten = mongoose.model('Kitten', kittySchema);
-  
-  // A model is a class with which we construct documents. In this case, each document will be a kitten with properties and behaviors as declared in our schema. Let's create a kitten document representing the little guy we just met on the sidewalk outside:
-  const silence = new Kitten({ name: 'Silence' });
-  console.log(silence.name); // 'Silence'
-}
-
-```
-
-
-
-
-
-
-
-
-
-
-
 
 
 <br><br><br><br>
@@ -219,6 +107,18 @@ const resSave = await myDoc.save()
 const res = await testModel.findOne({ "name": "abc" }).exec()
 
 ```
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
