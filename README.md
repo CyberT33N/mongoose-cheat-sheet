@@ -44,7 +44,7 @@ ___________________________________________
 ```javascript
 const mongoose = require('mongoose');
 // poolSize ist the amount of connections we allow
-const connOptions = {useNewUrlParser: true, useUnifiedTopology: true, server: {poolSize: 5}}
+const connOptions = {useNewUrlParser: true, useUnifiedTopology: true, poolSize: 5}
 
 
 
