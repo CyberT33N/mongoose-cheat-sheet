@@ -39,16 +39,39 @@ ___________________________________________
 ___________________________________________
 <br><br>
 
+
 # Connect
 ```javascript
 const mongoose = require('mongoose');
+
+/* ---- METHOD #1 - Listener ---- */
 mongoose.connect('mongodb://localhost/test', {useNewUrlParser: true, useUnifiedTopology: true});
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', connOpen);
+db.once('open', createSchema);
 
-const connOpen = async () => {
+
+
+/* ---- METHOD #2 - Callback ---- */
+// alternative
+mongoose.connect('mongodb://localhost/test', {useNewUrlParser: true, useUnifiedTopology: true}, connOpen)
+
+const connOpen = async e => {
+  if(e) throw new Error(e)
+
+  await createSchema()
+}
+
+
+
+
+// --------------------------------------------------------------------- //
+
+
+
+
+const createSchema = async () => {
   // With Mongoose, everything is derived from a Schema. Let's get a reference to it and define our kittens.
   const kittySchema = new mongoose.Schema({
     name: String
@@ -61,4 +84,5 @@ const connOpen = async () => {
   const silence = new Kitten({ name: 'Silence' });
   console.log(silence.name); // 'Silence'
 }
+
 ```
