@@ -43,9 +43,13 @@ ___________________________________________
 # Connect
 ```javascript
 const mongoose = require('mongoose');
+// poolSize ist the amount of connections we allow
+const connOptions = {useNewUrlParser: true, useUnifiedTopology: true, server: {poolSize: 5}}
+
+
 
 /* ---- METHOD #1 - Listener ---- */
-mongoose.connect('mongodb://localhost/test', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb://localhost/test', connOptions);
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -55,7 +59,7 @@ db.once('open', createSchema);
 
 /* ---- METHOD #2 - Callback ---- */
 // alternative
-mongoose.connect('mongodb://localhost/test', {useNewUrlParser: true, useUnifiedTopology: true}, connOpen)
+mongoose.connect('mongodb://localhost/test', connOptions, connOpen)
 
 const connOpen = async e => {
   if(e) throw new Error(e)
