@@ -123,12 +123,17 @@ const myDoc = new testModel({
 const resSave = await myDoc.save()
 
 const res = await testModel.findOne({ "name": "abc" }).exec()
-
 ```
 
 
+<br><br>
 
-
+#### Drop Database
+```javascript
+const conn = mongoose.createConnection('mongodb://localhost:27017/mydb');
+// Deletes the entire 'mydb' database
+await conn.dropDatabase();
+```
 
 
 
