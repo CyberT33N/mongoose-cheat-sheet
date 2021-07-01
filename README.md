@@ -188,3 +188,86 @@ const testModel = conn.model('test', testSchema)
 
 const res = await testModel.findOne({ "name": name })
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br>
+___________________________________________
+___________________________________________
+<br><br>
+
+
+# Schema
+
+<br><br>
+
+## timestamps (https://mongoosejs.com/docs/guide.html#timestamps)
+- The timestamps option tells mongoose to assign createdAt and updatedAt fields to your schema. The type assigned is Date. 
+
+<br><br>
+
+By default, the names of the fields are createdAt and updatedAt. Customize the field names by setting timestamps.createdAt and timestamps.updatedAt.
+```javascript
+var mySchema = new mongoose.Schema({name: String}, {timestamps: true});
+```
+
+
+<br><br>
+
+
+## optimisticConcurrency (https://mongoosejs.com/docs/guide.html#optimisticConcurrency)
+- Optimistic concurrency is a strategy to ensure the document you're updating didn't change between when you loaded it using find() or findOne(), and when you update it using save().
+
+<br><br>
+
+For example, suppose you have a House model that contains a list of photos, and a status that represents whether this house shows up in searches. Suppose that a house that has status 'APPROVED' must have at least two photos
+
+```javascript
+const House = mongoose.model('House', Schema({
+  status: String,
+  photos: [String]
+}, { optimisticConcurrency: true }));
+```
