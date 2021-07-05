@@ -420,7 +420,11 @@ await mongoose.dropCollection(collection)
 
 ## check if collection exist
 ```javascript
+// check all collection in db
 const res = await conn.db.listCollections().toArray()
+
+// check for specific collection in db
+const res = await conn.db.listCollections({name: 'ModelAdditional'}).toArray()
 ```
 
 
