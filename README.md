@@ -415,3 +415,14 @@ ___________________________________________
 await mongoose.dropCollection(collection)
 ```
 
+
+<br><br>
+
+## check if collection exist
+```javascript
+const res = await conn.db.listCollections().toArray()
+```
+
+
+
+
