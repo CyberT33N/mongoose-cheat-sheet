@@ -263,3 +263,73 @@ const House = mongoose.model('House', Schema({
   photos: [String]
 }, { optimisticConcurrency: true }));
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br>
+___________________________________________
+___________________________________________
+<br><br>
+
+
+# Documents
+
+<br><br>
+
+## create new document
+```javascript
+const Tank = mongoose.model('Tank', { size: 'string' });
+const small = new Tank({ size: 'small' });
+await small.save();
+```
+
