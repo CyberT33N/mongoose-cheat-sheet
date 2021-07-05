@@ -322,7 +322,7 @@ ___________________________________________
 <br><br>
 
 
-# Documents
+# Document
 
 <br><br>
 
@@ -331,5 +331,74 @@ ___________________________________________
 const Tank = mongoose.model('Tank', { size: 'string' });
 const small = new Tank({ size: 'small' });
 await small.save();
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br>
+___________________________________________
+___________________________________________
+<br><br>
+
+
+# Collection
+
+<br><br>
+
+## drop collection
+```javascript
+await mongoose.dropCollection(collection)
 ```
 
