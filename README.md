@@ -248,6 +248,11 @@ ___________________________________________
 - For default mongoose will add the letter s to your collection and write everything lowercase. To force your own collection name you can do this:
 ```javascript
 var dataSchema = new Schema({..}, { collection: 'data' })
+
+// or 
+
+var collectionName = 'actor'
+var M = mongoose.model('Actor', schema, collectionName);
 ```
 <br><br>
 
