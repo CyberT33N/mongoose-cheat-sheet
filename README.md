@@ -391,6 +391,79 @@ await small.save();
 
 
 
+<br><br>
+___________________________________________
+___________________________________________
+<br><br>
+
+
+# Model
+
+<br><br>
+
+## create model without schema
+- The option strict can be set to false to not force to use the schema when creating an model
+```javascript
+const EmployeeSchema = new Mongoose.Schema({}, {strict:false });
+Mongoose.model(modelName, EmployeeSchema);
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
