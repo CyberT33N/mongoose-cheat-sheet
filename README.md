@@ -428,5 +428,10 @@ const res = await conn.db.listCollections({name: 'ModelAdditional'}).toArray()
 ```
 
 
+<br><br>
 
-
+## get all documents from collection
+```javascript
+const collection = await conn.db.collection(collectionName)
+const models = await collection.find({}).toArray()
+```
