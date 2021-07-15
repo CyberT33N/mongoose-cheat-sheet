@@ -505,6 +505,6 @@ const res = await conn.db.listCollections({name: 'ModelAdditional'}).toArray()
 
 ## get all documents from collection
 ```javascript
-const collection = await conn.db.collection(collectionName)
-const models = await collection.find({}).toArray()
+const model = await conn.model(modelName, schema, collectionName)
+const documents = (await model.find({})).map(doc => doc._doc)
 ```
