@@ -408,6 +408,15 @@ const EmployeeSchema = new Mongoose.Schema({}, {strict:false });
 Mongoose.model(modelName, EmployeeSchema);
 ```
 
+<br><br>
+
+## allow special characters for properties
+- Allows forbidden characters like . or $
+```javascript
+await model.save({ checkKeys: false })
+```
+
+
 
 
 
