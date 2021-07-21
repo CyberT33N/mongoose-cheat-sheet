@@ -437,6 +437,20 @@ const res = await mongooseModel.findOneAndUpdate(query, { name: 'test' })
 
 
 
+<br><br><br><br>
+
+
+#### .create()
+```javascript
+const User = mongoose.model('User', mongoose.Schema({
+  email: String
+}));
+
+const doc = await User.create({ email: 'bill@microsoft.com' });
+```
+
+
+
 
 
 
