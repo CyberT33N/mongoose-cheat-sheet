@@ -418,7 +418,21 @@ await model.save({ checkKeys: false })
 
 
 
+<br><br><br><br>
 
+## find()
+```javascript
+const doc = await mongooseModel.find(query)
+```
+
+
+<br><br><br><br>
+
+
+#### .findOneAndUpdate()
+```javascript
+const res = await mongooseModel.findOneAndUpdate(query, { name: 'test' })
+```
 
 
 
