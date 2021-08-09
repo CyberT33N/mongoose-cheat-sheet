@@ -371,6 +371,19 @@ ___________________________________________
 
 
 # Model
+```javascript
+const testSchema = new mongoose.Schema({
+    name: String
+}, { collection : 'YourCollectionName' })
+
+const testModel = conn.model('test', testSchema)
+
+const myDoc = new testModel({
+    name: "abc"
+})
+
+const resSave = await myDoc.save()
+```
 
 <br><br>
 
