@@ -166,33 +166,6 @@ await conn.dropDatabase();
 
 
 
-<br><br>
-___________________________________________
-___________________________________________
-<br><br>
-
-
-# Query
-
-<br><br>
-
-## .findeOne()
-```javascript
-const conn = await mongoose.createConnection(uri)
-
-const testSchema = new mongoose.Schema({
-    name: String
-}, { collection : 'YourCollectionName' })
-
-const testModel = conn.model('test', testSchema)
-
-const res = await testModel.findOne({ "name": name })
-```
-
-
-
-
-
 
 
 
@@ -424,6 +397,22 @@ await model.save({ checkKeys: false })
 ```javascript
 const doc = await mongooseModel.find(query)
 ```
+
+<br><br>
+
+## .findeOne()
+```javascript
+const conn = await mongoose.createConnection(uri)
+
+const testSchema = new mongoose.Schema({
+    name: String
+}, { collection : 'YourCollectionName' })
+
+const testModel = conn.model('test', testSchema)
+
+const res = await testModel.findOne({ "name": name })
+```
+
 
 
 <br><br><br><br>
