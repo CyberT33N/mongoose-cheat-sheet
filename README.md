@@ -247,6 +247,15 @@ class UserClass {
   static findByEmail(email) {
     return this.findOne({ email });
   }
+  
+  static async createEntity() {
+    const schema = {
+        "name": "test"
+    }
+
+    const myDoc = new this(schema)
+    await myDoc.save()
+}
 }
 
 // `schema` will now have a `gravatarImage` virtual, a `getProfileUrl()` method,
