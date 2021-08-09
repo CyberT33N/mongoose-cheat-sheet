@@ -252,6 +252,8 @@ class UserClass {
 // `schema` will now have a `gravatarImage` virtual, a `getProfileUrl()` method,
 // and a `findByEmail()` static
 userSchema.loadClass(UserClass);
+
+
 ```
 
 
@@ -262,19 +264,59 @@ userSchema.loadClass(UserClass);
 const userSchema = mongoose.Schema({
   email: String
 });
+
+
+
+
+
+/* Example #1 */
 // Create a virtual property `domain` that's computed from `email`.
 userSchema.virtual('domain').get(function() {
   return this.email.slice(this.email.indexOf('@') + 1);
 });
-const User = mongoose.model('User', userSchema);
 
+
+
+
+/* Example #2 - .loadClass() */
+class UserClass {
+  getDomain() {
+    return this.email.slice(this.email.indexOf('@') + 1);
+  }
+}
+
+userSchema.loadClass(UserClass);
+
+
+
+
+
+
+const User = mongoose.model('User', userSchema);
 let doc = await User.create({ email: 'test@gmail.com' });
-// `domain` is now a property on User documents.
 doc.domain; // 'gmail.com'
 ```
 
 
 
+<br><br>
+
+
+## Document Method
+```javascript
+const userSchema = new Schema({ email: String });
+class UserClass {
+  getProfileUrl() {
+    return `https://mysite.com/${this.email}`;
+  }
+}
+
+userSchema.loadClass(UserClass);
+
+const User = mongoose.model('User', userSchema);
+let doc = await User.create({ email: 'test@gmail.com' });
+doc.getProfileUrl(); // 'https://mysite.com/test@gmail.com'
+```
 
 
 
