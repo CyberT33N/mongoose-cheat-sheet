@@ -319,10 +319,42 @@ doc.getProfileUrl(); // 'https://mysite.com/test@gmail.com'
 ```
 
 
+<br><br>
+
+
+
+## Static (https://mongoosejs.com/docs/api.html#schema_Schema-static)
+```javascript
+const schema = new Schema(..);
+
+
+
+/* Example #1 */
+// Equivalent to `schema.statics.findByName = function(name) {}`;
+schema.static('findByName', function(name) {
+  return this.find({ name: name });
+});
 
 
 
 
+/* Example #2 */
+class UserClass {
+  findByName() {
+     return this.find({ name: name });
+  }
+}
+
+schema.loadClass(UserClass);
+
+
+
+
+
+
+const Drink = mongoose.model('Drink', schema);
+await Drink.findByName('LaCroix');
+```
 
 
 
