@@ -675,6 +675,16 @@ const doc = await User.create({ email: 'bill@microsoft.com' });
 
 
 
+<br><br><br><br>
+
+## delete all models
+- Since Mongoose is a singleton you can to two times create the same model. For this case you may want to delete the current models
+```javascript
+for (const model in mongoose.models) {
+    delete mongoose.models[model]
+}
+```
+
 
 
 
