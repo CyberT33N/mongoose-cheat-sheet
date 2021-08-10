@@ -624,9 +624,28 @@ await model.save({ checkKeys: false })
 
 
 
+
 <br><br><br><br>
 
-## find()
+## Update property of model
+```javascript
+const schema = {
+    "name": "abc"
+}
+        
+const myDoc = new Model(schema)
+await myDoc.save()
+
+myDoc.set('name', 'newname')
+await myDoc.save()
+```
+
+
+
+
+<br><br><br><br>
+
+## .find()
 ```javascript
 const doc = await mongooseModel.find(query)
 ```
