@@ -369,6 +369,33 @@ await Drink.findByName('LaCroix');
 
 
 
+<br><br>
+
+
+
+## optimisticConcurrency (https://mongoosejs.com/docs/guide.html#optimisticConcurrency)
+- Optimistic concurrency is a strategy to ensure the document you're updating didn't change between when you loaded it using find() or findOne(), and when you update it using save().
+```javascript
+const Product = mongoose.model('Product', Schema({
+  name: String
+}, { optimisticConcurrency: true }));
+
+// saves with __v = 0
+let product = await new Product({ name: 'apple pie' }).save();
+
+// query a copy of the document for later (__v = 0)
+let oldProduct = await Product.findById(product._id);
+
+// increments to __v = 1
+product.name = 'mince pie';
+product = await product.save();
+
+// throws an error due to __v not matching the DB version
+oldProduct.name = 'blueberry pie';
+oldProduct = await oldProduct.save();
+```
+
+
 
 
 
