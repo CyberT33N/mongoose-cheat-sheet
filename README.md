@@ -369,7 +369,7 @@ await Drink.findByName('LaCroix');
 
 
 
-<br><br>
+<br><br><br><br>
 
 
 
@@ -396,73 +396,8 @@ oldProduct = await oldProduct.save();
 ```
 
 
+<br><br><br><br>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<br><br>
-___________________________________________
-___________________________________________
-<br><br>
-
-
-# Schema
-
-<br><br>
 
 ## create new schema with specific collection name
 - For default mongoose will add the letter s to your collection and write everything lowercase. To force your own collection name you can do this:
@@ -484,18 +419,56 @@ var mySchema = new mongoose.Schema({name: String}, {timestamps: true});
 ```
 
 
-<br><br>
 
 
-## optimisticConcurrency (https://mongoosejs.com/docs/guide.html#optimisticConcurrency)
-- Optimistic concurrency is a strategy to ensure the document you're updating didn't change between when you loaded it using find() or findOne(), and when you update it using save(). For example, suppose you have a House model that contains a list of photos, and a status that represents whether this house shows up in searches. Suppose that a house that has status 'APPROVED' must have at least two photos
 
-```javascript
-const House = mongoose.model('House', Schema({
-  status: String,
-  photos: [String]
-}, { optimisticConcurrency: true }));
-```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
