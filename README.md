@@ -64,14 +64,13 @@ db.once('open', createSchema);
 
 
 /* ---- METHOD #2 - Callback ---- */
-mongoose.connect('mongodb://localhost/test', connOptions, connOpen)
-
 const connOpen = async e => {
   if(e) throw new Error(e)
 
   await createSchema()
 }
 
+mongoose.connect('mongodb://localhost/test', connOptions, connOpen)
 
 
 
