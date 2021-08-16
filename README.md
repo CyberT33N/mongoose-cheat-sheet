@@ -59,7 +59,8 @@ mongoose.connect('mongodb://localhost/test', connOptions);
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', createSchema);
+db.once('open', create
+);
 
 
 
@@ -362,6 +363,47 @@ schema.loadClass(UserClass);
 
 const Drink = mongoose.model('Drink', schema);
 await Drink.findByName('LaCroix');
+```
+
+
+
+
+<br><br>
+
+
+
+## Plugins (https://mongoosejs.com/docs/plugins.html)
+```javascript
+// loadedAt.js
+module.exports = function loadedAtPlugin(schema, options) {
+  schema.virtual('loadedAt').
+    get(function() { return this._loadedAt; }).
+    set(function(v) { this._loadedAt = v; });
+
+  schema.post(['find', 'findOne'], function(docs) {
+    if (!Array.isArray(docs)) {
+      docs = [docs];
+    }
+    const now = new Date();
+    for (const doc of docs) {
+      doc.loadedAt = now;
+    }
+  });
+};
+
+// game-schema.js
+const loadedAtPlugin = require('./loadedAt');
+const gameSchema = new Schema({ ... });
+gameSchema.plugin(loadedAtPlugin);
+
+// player-schema.js
+const loadedAtPlugin = require('./loadedAt');
+const playerSchema = new Schema({ ... });
+playerSchema.plugin(loadedAtPlugin);
+
+// You can check if the plugin was correctly loaded by checking the schema of the Model
+const Model = mongoose.model(modelName, mongooseSchema, modelName)
+console.log('Model.schema.plugins.loadedAtPlugin')
 ```
 
 
