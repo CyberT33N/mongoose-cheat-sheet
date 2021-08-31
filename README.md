@@ -307,8 +307,32 @@ doc.domain; // 'gmail.com'
 ```
 
 
+<br><br>
+
+#### Convert _id to id
+```javascript
+// Duplicate the ID field.
+Schema.virtual('id').get(function(){
+    return this._id.toHexString();
+});
+
+// Ensure virtual fields are serialised.
+Schema.set('toJSON', {
+    virtuals: true
+});
+```
+
+
+
+
+
+
+
+
 
 <br><br>
+<br><br>
+
 
 
 ## Document Method
