@@ -698,6 +698,14 @@ await model.save({ checkKeys: false })
 ```
 
 
+<br><br>
+
+## access different collection
+```javascript
+const layoutBase = await Model.db.collection('CollectionName').findOne()
+```
+
+
 
 
 <br><br><br><br>
