@@ -605,6 +605,14 @@ await small.save();
 ```
 
 
+## findByIdAndUpdate
+```javascript
+const version = 1 || __v
+const query = {$set: newDataObject, $inc: {__v: version}}
+const doc = await Model.findByIdAndUpdate(statisticsId, query, {new: true})
+```
+
+
 
 
 
