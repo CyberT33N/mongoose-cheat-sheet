@@ -684,8 +684,8 @@ const resSave = await myDoc.save()
 ## Get _doc of Model
 - If you set virtuals to true they will be included aswell
 ```javascript
-const docs = await ModelEntity.find({modelName})
-const doc = docs[0].toJSON({ virtuals: true })
+const docs = await ModelEntity.findOne({modelName})
+const doc = docs.toJSON({ virtuals: true })
 ```
 
 <br><br>
