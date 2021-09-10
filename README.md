@@ -739,6 +739,12 @@ await myDoc.save()
 ## .find()
 ```javascript
 const doc = await mongooseModel.find(query)
+
+// return array instead of mongoose documents
+const doc = await mongooseModel.find(query).toArray()
+
+// Note that lean is not the same as toJSON as it returns a raw dump from Mongo (meaning no virtuals are included). See this for more info
+const doc = await mongooseModel.find(query).lean()
 ```
 
 <br><br>
