@@ -352,6 +352,30 @@ doc.getProfileUrl(); // 'https://mysite.com/test@gmail.com'
 ```
 
 
+
+
+<br><br>
+<br><br>
+
+
+
+## Model Method
+```javascript
+const userSchema = new Schema({ email: String });
+class UserClass {
+  getProfileUrl() {
+    return `https://mysite.com/${this.email}`;
+  }
+}
+
+userSchema.loadClass(UserClass);
+
+const User = mongoose.model('User', userSchema);
+User.schema.methods.getProfileUrl(); // 'https://mysite.com/test@gmail.com'
+```
+
+
+
 <br><br>
 
 
