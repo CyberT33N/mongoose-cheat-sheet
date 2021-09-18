@@ -428,6 +428,7 @@ module.exports = function loadedAtPlugin(schema, options) {
     get(function() { return this._loadedAt; }).
     set(function(v) { this._loadedAt = v; });
 
+  // do something after the documents gets saved
   schema.post(['find', 'findOne'], function(docs) {
     if (!Array.isArray(docs)) {
       docs = [docs];
@@ -437,6 +438,11 @@ module.exports = function loadedAtPlugin(schema, options) {
       doc.loadedAt = now;
     }
   });
+ 
+   // do something bevore the documents gets saved
+  schema.pre(['save', 'insertMany'], async function(doc) {
+    //..
+  })
 };
 
 // game-schema.js
