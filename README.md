@@ -440,9 +440,13 @@ module.exports = function loadedAtPlugin(schema, options) {
   });
  
    // do something bevore the documents gets saved
-  schema.pre(['save', 'insertMany'], async function(doc) {
-    //..
-  })
+    schema.pre('save', function(next) {
+        const author = requestContext.get('request').author;
+        this._createdBy = author.sub;
+        this._owner = author.sub;
+        this._groupOwner = author.group;
+        next();
+    });
 };
 
 // game-schema.js
