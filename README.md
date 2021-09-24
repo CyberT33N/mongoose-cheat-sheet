@@ -589,6 +589,7 @@ var mySchema = new mongoose.Schema({name: String}, {timestamps: true});
 
 
 ## unique
+- We must use .ensureIndex() on the model or createIndex in the connection options. Otherwhise there is problem without the unique verification when you not drop the collection before.
 ```javascript
 const uri = 'mongodb://xxx:xxx@127.0.0.1:27017/test_project1?authSource=admin'
 const connOptions = {
@@ -596,6 +597,7 @@ const connOptions = {
     useUnifiedTopology: true,
     useCreateIndex: true
 }
+
 const mongoose = require('mongoose')
 
 const mongodbUri = require('mongodb-uri')
@@ -644,11 +646,13 @@ const main = async () => {
             unique: true,
             required: true
         }
-        // createdAt2: { type: Date, expires: 30, default: Date.now }
     }, { collection: 'test' })
-    // testSchema.index({name:1}, {unique:true})
+
 
     const Model = mongoose.model('test', testSchema)
+    Model.ensureIndex({unique: true})
+    
+    // Method #2
     // Model.db.collection('test').createIndex({name:1}, {unique:true})
 
     await Model.create({ "name": "test1" })
