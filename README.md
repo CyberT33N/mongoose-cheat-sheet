@@ -585,6 +585,81 @@ var mySchema = new mongoose.Schema({name: String}, {timestamps: true});
 
 
 
+<br><br>
+
+
+## unique
+```javascript
+const uri = 'mongodb://xxx:xxx@127.0.0.1:27017/test_project1?authSource=admin'
+const connOptions = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true
+}
+const mongoose = require('mongoose')
+
+const mongodbUri = require('mongodb-uri')
+const MongoClient = require('mongodb').MongoClient
+const client = new MongoClient(uri, connOptions)
+let uriObj = mongodbUri.parse(uri)
+
+/**
+ *
+ * @returns {Promise<void>}
+ */
+const dropTestDbs = async () => {
+    try {
+        const conn = await client.connect()
+        const dbs = await conn.db().admin().listDatabases()
+
+        for(const db of dbs.databases) {
+            const dbName = db.name
+
+            if (dbName.includes('test')) {
+                uriObj.database = dbName
+                const uri = mongodbUri.format(uriObj)
+
+                const client = new MongoClient(uri, connOptions)
+                const conn = await client.connect()
+
+                await conn.db().dropDatabase()
+            }
+        }
+    } catch (e) {
+        throw new Error(`Can not drop test databases - Error: ${e}`)
+    }
+}
+
+
+const sleep = async timeout => new Promise(resolve => setTimeout(resolve, timeout))
+
+const main = async () => {
+    await dropTestDbs()
+
+    await mongoose.connect(uri, connOptions)
+
+    const testSchema = new mongoose.Schema({
+        name: {
+            type: String,
+            unique: true,
+            required: true
+        }
+        // createdAt2: { type: Date, expires: 30, default: Date.now }
+    }, { collection: 'test' })
+    // testSchema.index({name:1}, {unique:true})
+
+    const Model = mongoose.model('test', testSchema)
+    // Model.db.collection('test').createIndex({name:1}, {unique:true})
+
+    await Model.create({ "name": "test1" })
+    
+    // will throw error
+    await Model.create({ "name": "test1" })
+}
+
+main().catch(e => console.log(e))
+```
+
 
 
 
