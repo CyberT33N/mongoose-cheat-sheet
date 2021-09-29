@@ -513,8 +513,6 @@ module.exports = function loadedAtPlugin(schema, options) {
   
   schema.pre(['findOneAndUpdate', 'updateOne', 'update', 'updateMany'], async function() {
         const htmlFragment = this.get('htmlFragment')
-        const thumbnail = this.get('thumbnail')
-        const id = this.get('_id')
    });
 };
 
