@@ -513,7 +513,7 @@ module.exports = function loadedAtPlugin(schema, options) {
   
   schema.pre(['findOneAndUpdate', 'updateOne', 'update', 'updateMany'], async function() {
         const htmlFragment = this.get('htmlFragment')
-        const id = this.getQuery()._id
+        const id = this.getQuery().$and[0]._id // maybe this works too this.getQuery()._id
    });
 };
 
