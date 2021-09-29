@@ -502,14 +502,20 @@ module.exports = function loadedAtPlugin(schema, options) {
     }
   });
  
-   // do something bevore the documents gets saved
-    schema.pre('save', function(next) {
-        const author = requestContext.get('request').author;
-        this._createdBy = author.sub;
-        this._owner = author.sub;
-        this._groupOwner = author.group;
-        next();
-    });
+ // do something bevore the documents gets saved
+  schema.pre('save', function(next) {
+      const author = requestContext.get('request').author;
+      this._createdBy = author.sub;
+      this._owner = author.sub;
+      this._groupOwner = author.group;
+      next();
+  });
+  
+  schema.pre(['findOneAndUpdate', 'updateOne', 'update', 'updateMany'], async function() {
+        const htmlFragment = this.get('htmlFragment')
+        const thumbnail = this.get('thumbnail')
+        const id = this.get('_id')
+   });
 };
 
 // game-schema.js
