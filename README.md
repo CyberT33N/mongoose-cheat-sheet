@@ -512,8 +512,14 @@ module.exports = function loadedAtPlugin(schema, options) {
   });
   
   schema.pre(['findOneAndUpdate', 'updateOne', 'update', 'updateMany'], async function() {
+        // because you only have access to the body that update the doc and not to all properties of the updated doc from the db we must search it
+        const docToUpdate = await this.model.findOne(this.getQuery())
+
+        // you can get the properties of the by using get or this.getQuery()
         const htmlFragment = this.get('htmlFragment')
-        const id = this.getQuery().$and[0]._id // maybe this works too this.getQuery()._id
+
+        // In some cases this may work aswell
+        // const id = this.getQuery().$and[0]._id // maybe this works too this.getQuery()._id
    });
 };
 
