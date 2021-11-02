@@ -504,14 +504,19 @@ module.exports = function loadedAtPlugin(schema, options) {
  
  // do something bevore the documents gets saved
   schema.pre('save', function(next) {
-      const author = requestContext.get('request').author;
-      this._createdBy = author.sub;
-      this._owner = author.sub;
-      this._groupOwner = author.group;
-      next();
+      try {
+          const author = requestContext.get('request').author;
+          this._createdBy = author.sub;
+          this._owner = author.sub;
+          this._groupOwner = author.group;
+          next();
+      } catch (e) {
+          next(e)
+      }
   });
   
-  schema.pre(['findOneAndUpdate', 'updateOne', 'update', 'updateMany'], async function() {
+  schema.pre(['findOneAndUpdate', 'updateOne', 'update', 'updateMany'], async function(next) {
+      try {
         // because you only have access to the body that update the doc and not to all properties of the updated doc from the db we must search it
         const docToUpdate = await this.model.findOne(this.getQuery())
 
@@ -520,6 +525,10 @@ module.exports = function loadedAtPlugin(schema, options) {
 
         // In some cases this may work aswell
         // const id = this.getQuery().$and[0]._id // maybe this works too this.getQuery()._id
+        next()
+      } catch (e) {
+          next(e)
+      }
    });
 };
 
