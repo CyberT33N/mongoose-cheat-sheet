@@ -54,7 +54,12 @@ const connOptions = {useNewUrlParser: true, useUnifiedTopology: true, poolSize: 
 
 
 
-/* ---- METHOD #1 - Listener ---- */
+/* ---- METHOD #1 - Await ---- */
+await mongoose.connect(process.env.MONGODB_ADDRESS)
+
+
+
+/* ---- METHOD #2 - Listener ---- */
 mongoose.connect('mongodb://localhost/test', connOptions);
 
 const db = mongoose.connection;
@@ -64,7 +69,7 @@ db.once('open', create
 
 
 
-/* ---- METHOD #2 - Callback ---- */
+/* ---- METHOD #3 - Callback ---- */
 const connOpen = async e => {
   if(e) throw new Error(e)
 
