@@ -294,6 +294,27 @@ ___________________________________________
 
 <br><br>
 
+
+
+## How to allow null als value for required properties
+
+```javascript
+const testSchema = new mongoose.Schema({
+   type: String,
+   name: {
+        type:String,
+        unique: true,
+        required: function () {
+            const res = this.name === null ? false : true
+            return res
+        }
+    }
+})
+```
+
+<br><br>
+
+
 ## .loadClass() (https://mongoosejs.com/docs/api.html#schema_Schema-loadClass)
 
 ```javascript
@@ -329,8 +350,6 @@ class UserClass {
 // `schema` will now have a `gravatarImage` virtual, a `getProfileUrl()` method,
 // and a `findByEmail()` static
 userSchema.loadClass(UserClass);
-
-
 ```
 
 
