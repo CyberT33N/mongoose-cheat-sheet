@@ -292,9 +292,39 @@ ___________________________________________
 
 # Schema
 
+
 <br><br>
 
+## Set index
+```javascript
+// method #1
+const Schema = mongoose.Schema;
+let user = new Schema({
+    email: {
+        type: String,
+        required: true,
+        index: true       //---Index----
+});
 
+module.exports = mongoose.model('User', user);
+
+
+
+
+
+// method #2
+const Schema = mongoose.Schema;
+let user = new Schema({
+    email: {
+        type: String,
+        required: true
+});
+user.index({ email: 1 });    //---Index----
+
+module.exports = mongoose.model('User', user);
+```
+
+<br><br>
 
 ## How to allow null als value for required properties
 
