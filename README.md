@@ -295,6 +295,35 @@ ___________________________________________
 
 <br><br>
 
+## Disable type casting
+- https://stackoverflow.com/questions/24153711/mongoose-not-enforcing-type-with-model-save
+- http://thecodebarbarian.com/whats-new-in-mongoose-54-global-schematype-configuration
+- https://mongoosejs.com/docs/tutorials/custom-casting.html
+
+```javascript
+/*
+Before running validators, Mongoose attempts to coerce values to the correct type. This process is called casting the document. If casting fails for a given path, the error.errors object will contain a CastError object.
+
+Casting runs before validation, and validation does not run if casting fails.
+
+- String:
+  - false -> "false"
+
+- Number:
+  - "123" -> 123
+  - "false" -> 0
+*/
+
+mongoose.Schema.Types.Boolean.cast(false);
+mongoose.Schema.Types.Date.cast(false);
+mongoose.Schema.Types.Decimal128.cast(false);
+mongoose.Schema.Types.Number.cast(false);
+mongoose.Schema.Types.ObjectId.cast(false);
+mongoose.Schema.Types.String.cast(false);
+```
+
+<br><br>
+
 ## Set index
 ```javascript
 // method #1
@@ -853,6 +882,21 @@ const small = new Tank({ size: 'small' });
 await small.save();
 ```
 
+<br><br>
+
+## validate document
+```javascript
+const schema = new mongoose.Schema({
+  age: Number
+});
+
+const Model = mongoose.model('Test', schema);
+
+const doc = new Model({ age: 'wrong type' });
+const err = doc.validateSync();
+```
+
+<br><br>
 
 ## findByIdAndUpdate
 ```javascript
