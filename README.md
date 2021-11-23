@@ -314,13 +314,35 @@ Casting runs before validation, and validation does not run if casting fails.
   - "false" -> 0
 */
 
+
+method #1 - global
 mongoose.Schema.Types.Boolean.cast(false);
 mongoose.Schema.Types.Date.cast(false);
 mongoose.Schema.Types.Decimal128.cast(false);
 mongoose.Schema.Types.Number.cast(false);
 mongoose.Schema.Types.ObjectId.cast(false);
 mongoose.Schema.Types.String.cast(false);
+
+
+
+// method #2 - Disable for path
+age: {
+  type: Number, 
+  cast: false // Disable casting just for this path
+}
+
+
+// method #3 - Disable for path with custom function
+age: {
+  type: Number,
+  cast: v => { return typeof v === 'number' && !isNaN(v) ? Number(v) : v; } // Override casting just for this path
+}
 ```
+
+
+
+
+
 
 <br><br>
 
