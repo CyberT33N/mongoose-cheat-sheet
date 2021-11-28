@@ -1132,7 +1132,17 @@ const res = await testModel.findOne({ "name": name })
 
 #### .findOneAndUpdate()
 ```javascript
-const res = await mongooseModel.findOneAndUpdate(query, { name: 'test' })
+const data = { name: 'test' }
+
+const options = {
+    new: true // <-- Will return the updated doc
+    
+    // If you use a custom validator you must enable those two options 
+    runValidators: true, // <-- enables custom validator
+    context: 'query' // <-- enables this context to custom validator
+}
+
+const res = await Model.findOneAndUpdate(query, data, options)
 ```
 
 
