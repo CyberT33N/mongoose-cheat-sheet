@@ -697,6 +697,7 @@ module.exports = function loadedAtPlugin(schema, options) {
     }
   });
  
+ 
  // do something bevore the documents gets saved
   schema.pre('save', function(next) {
       try {
@@ -710,6 +711,8 @@ module.exports = function loadedAtPlugin(schema, options) {
       }
   });
   
+  
+  // method #1 - do something before doc gets updated
   schema.pre(['findOneAndUpdate', 'updateOne', 'update', 'updateMany'], async function(next) {
       try {
         // because you only have access to the body that update the doc and not to all properties of the updated doc from the db we must search it
@@ -742,6 +745,22 @@ module.exports = function loadedAtPlugin(schema, options) {
           next(e)
       }
    });
+   
+   
+   
+   // method #2  - do something before doc gets updated
+   schema.pre('findOneAndUpdate', async function(next){ 
+     const schema = this;
+     const { newUpdate } = schema.getUpdate();
+     const queryConditions = schema._condition
+
+     if(newUpdate){
+       //some mutation magic
+       await schema.updateOne(queryConditions, {newUpdate:"modified data"}); 
+       next()
+     }
+     next()
+})
 };
 
 // game-schema.js
