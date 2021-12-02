@@ -720,6 +720,16 @@ module.exports = function loadedAtPlugin(schema, options) {
 
         // In some cases this may work aswell
         // const id = this.getQuery().$and[0]._id // maybe this works too this.getQuery()._id
+        
+        // change field before updating
+        if (htmlFragment) {
+            this._update.htmlFragment = 'new name'
+        }
+        
+        // delete field to make it immutable. So the original value will be choosen
+        if (htmlFragment) {
+            delete this._update.$set.htmlFragment
+        }
         next()
       } catch (e) {
           next(e)
