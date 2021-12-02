@@ -300,6 +300,7 @@ ___________________________________________
 
 ## Prevent update on specific field 
 -  https://mongoosejs.com/docs/api/schematype.html#schematype_SchemaType-immutable
+-  Notice that you can not use immutable with strict:false as schema options
 
 ```javascript
 const CustomerSchema = new mongoose.Schema({
