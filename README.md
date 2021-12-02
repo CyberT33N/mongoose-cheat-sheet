@@ -293,6 +293,47 @@ ___________________________________________
 # Schema
 
 
+
+
+
+<br><br>
+
+## Prevent update on specific field 
+-  https://mongoosejs.com/docs/api/schematype.html#schematype_SchemaType-immutable
+
+```javascript
+const CustomerSchema = new mongoose.Schema({
+    name : {
+        type : String,
+        required : true,
+        trim : true
+    },
+    email : {
+        type : String,
+        required : true,
+        trim : true,
+        immutable: true // ADD THIS PROPERTY HERE
+    },
+    balance : {
+        type : Number ,
+        default : 0
+    }
+}
+
+
+// You can also use a plugin for this and delete the field before updating..
+
+```
+
+
+
+
+
+
+
+
+
+
 <br><br>
 
 ## Disable type casting
