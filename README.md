@@ -725,8 +725,11 @@ module.exports = function loadedAtPlugin(schema, options) {
         if (htmlFragment) {
             // method #1
             this.set('htmlFragment', 'new name')
-
+            
             // method #2
+            const { htmlFragment } = this.getUpdate();
+
+            // method #3
             this._update.htmlFragment = 'new name'
         }
         
