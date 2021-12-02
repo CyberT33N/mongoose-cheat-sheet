@@ -712,10 +712,35 @@ module.exports = function loadedAtPlugin(schema, options) {
   });
   
   
-  // method #1 - do something before doc gets updated
+  
+    // method #1 - do something before doc gets updated - Not allow updating specific fields
+    schema.pre(['findOneAndUpdate'], async function(next) {
+        try {
+            const type = this.get('type')
+            const query = this.getQuery()
+
+            const doc =  await this.findOne(query)
+
+            if (type) {
+                this.set('type', doc.type)
+            }
+
+            next()
+        } catch (e) {
+            next(new BaseError(e))
+        }
+    })
+
+    
+   
+  // method #2 - do something before doc gets updated
   schema.pre(['findOneAndUpdate', 'updateOne', 'update', 'updateMany'], async function(next) {
       try {
         // because you only have access to the body that update the doc and not to all properties of the updated doc from the db we must search it
+        // method 1
+        const docToUpdate = await this.findOne(this.getQuery())
+        
+        // method 2
         const docToUpdate = await this.model.findOne(this.getQuery())
 
         // you can get the properties of the by using get or this.getQuery()
@@ -748,7 +773,7 @@ module.exports = function loadedAtPlugin(schema, options) {
    
    
    
-   // method #2  - do something before doc gets updated
+   // method #3  - do something before doc gets updated
    schema.pre('findOneAndUpdate', async function(next){ 
      const schema = this;
      const { newUpdate } = schema.getUpdate();
