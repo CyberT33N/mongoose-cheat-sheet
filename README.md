@@ -723,6 +723,10 @@ module.exports = function loadedAtPlugin(schema, options) {
         
         // change field before updating
         if (htmlFragment) {
+            // method #1
+            this.set('htmlFragment', 'new name')
+
+            // method #2
             this._update.htmlFragment = 'new name'
         }
         
