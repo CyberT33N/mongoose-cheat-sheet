@@ -752,7 +752,7 @@ module.exports = function loadedAtPlugin(schema, options) {
    schema.pre('findOneAndUpdate', async function(next){ 
      const schema = this;
      const { newUpdate } = schema.getUpdate();
-     const queryConditions = schema._condition
+     const queryConditions = schema._conditions
 
      if(newUpdate){
        //some mutation magic
