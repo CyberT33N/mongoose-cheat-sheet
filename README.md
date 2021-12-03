@@ -639,15 +639,29 @@ User.schema.methods.getProfileUrl(); // 'https://mysite.com/test@gmail.com'
 
 
 ## Static (https://mongoosejs.com/docs/api.html#schema_Schema-static)
+- Notice that when you want to create a new document inside of a static it is not enough to delete the _id and use this.create(). You must define a new _id 
 ```javascript
 const schema = new Schema(..);
 
 
 
-/* Example #1 */
+/* Example #1a */
 // Equivalent to `schema.statics.findByName = function(name) {}`;
 schema.static('findByName', function(name) {
   return this.find({ name: name });
+});
+
+/* Example #1b - Create new document */
+schema.static('clone', function(id) {
+    let toClone = await this.findOne({ _id: id }).select('-_id')
+
+    const clone = Object.assign({}, toClone._doc)
+    
+    clone.name += '_copy'
+    clone._id = mongoose.Types.ObjectId()
+    
+    await this.create(clone)
+    return clone
 });
 
 
@@ -674,7 +688,19 @@ await Drink.findByName('LaCroix');
 
 
 
-<br><br>
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br><br><br>
 
 
 
