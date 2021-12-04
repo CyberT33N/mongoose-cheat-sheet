@@ -1173,6 +1173,15 @@ const resSave = await myDoc.save()
 
 <br><br>
 
+## Get random document
+- If you set virtuals to true they will be included aswell
+```javascript
+Model.aggregate([{ $sample: { size: 1 } }])
+```
+
+
+<br><br>
+
 ## Get _doc of Model
 - If you set virtuals to true they will be included aswell
 ```javascript
