@@ -1194,8 +1194,16 @@ const doc = docs.toJSON({ virtuals: true })
 ## create model without schema
 - The option strict can be set to false to not force to use the schema when creating an model
 ```javascript
-const EmployeeSchema = new Mongoose.Schema({}, {strict:false });
-Mongoose.model(modelName, EmployeeSchema);
+const EmployeeSchema = new mongoose.Schema({}, {strict:false });
+const Model = mongoose.model(modelName, EmployeeSchema);
+await Model.create(data)
+
+// If you got any problems while creating data with method from above then try this
+const instance = new Model()
+const data = instance._doc
+instance._doc = {...data, ...yourDataHere}
+
+await instance.save()
 ```
 
 <br><br>
