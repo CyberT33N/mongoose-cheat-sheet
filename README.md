@@ -331,6 +331,65 @@ const CustomerSchema = new mongoose.Schema({
 
 
 
+<br><br>
+
+## Schema Options
+- https://mongoosejs.com/docs/guide.html#options
+
+
+
+```
+Valid options:
+
+autoIndex
+autoCreate
+bufferCommands
+bufferTimeoutMS
+capped
+collection
+discriminatorKey
+id
+_id
+minimize
+read
+writeConcern
+shardKey
+strict
+strictQuery
+toJSON
+toObject
+typeKey
+useNestedStrict
+validateBeforeSave
+versionKey
+optimisticConcurrency
+collation
+timeseries
+selectPopulatedPaths
+skipVersioning
+timestamps
+storeSubdocValidationError
+```
+
+```javascript
+const options = {
+    optimisticConcurrency: true, // https://mongoosejs.com/docs/guide.html#optimisticConcurrency
+    validateBeforeSave: true, // https://mongoosejs.com/docs/guide.html#validateBeforeSave
+    toObject: { virtuals: true }, // https://mongoosejs.com/docs/api.html#document_Document-toObject
+    toJSON: { virtuals: true },
+    id: false
+}
+
+// Example #1
+const CustomerSchema = new mongoose.Schema({..}, options)
+
+
+// Example #2
+const schema = new Schema({..})
+schema.set(options, value)
+```
+
+
 
 
 
