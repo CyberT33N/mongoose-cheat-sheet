@@ -197,6 +197,64 @@ await conn.dropDatabase();
 
 
 
+<br><br>
+___________________________________________
+___________________________________________
+<br><br>
+
+
+# Shell
+
+<br><br>
+
+
+## How to run mongo shell commands in Mongoose?
+```javascript
+mongoose.connection.db.admin().command({ isMaster: 1 }, (err, result) => {
+  console.log('Result: ', result);
+})
+
+// or
+
+mongoose.connection.executeDbAdminCommand({ isMaster: 1 }, (err, result) => {
+  console.log('Result: ', result);
+})
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
