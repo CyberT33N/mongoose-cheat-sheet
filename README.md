@@ -845,9 +845,14 @@ module.exports = function loadedAtPlugin(schema, options) {
   schema.pre('save', function(next) {
       try {
           const author = requestContext.get('request').author;
+          
+          // You can access aswell other collections
+          const collection = this.db.collection('collectionName')
+          
           this._createdBy = author.sub;
           this._owner = author.sub;
           this._groupOwner = author.group;
+          
           next();
       } catch (e) {
           next(e)
