@@ -841,6 +841,23 @@ module.exports = function loadedAtPlugin(schema, options) {
   });
  
  
+ 
+   // do something after the documents gets saved - method #2
+  schema.post("save", async function (doc, next) {
+    try {
+      let data = await doc
+        .model("User")
+        .findOneAndUpdate({ _id: doc._id }, { exampleIDField: "some ID you want to pass" });
+    } catch (error) {
+      console.log("get -> error", error);
+      next(error);
+    }
+  });
+
+
+ 
+ 
+ 
  // do something bevore the documents gets saved
   schema.pre('save', function(next) {
       try {
