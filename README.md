@@ -452,6 +452,26 @@ schema.set(options, value)
 
 
 
+
+<br><br>
+
+## Allow additional fields that are not described in schema
+```javascript
+let carSchema = new mongoose.Schema({
+    url:  String,
+    unique: {type: String, index: { unique: true }},
+    number: String,
+    title: String,
+    price: String,
+}, { strict: false });
+```
+
+
+
+
+
+
+
 <br><br>
 
 ## Disable type casting
