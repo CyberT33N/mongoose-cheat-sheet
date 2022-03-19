@@ -1568,6 +1568,10 @@ const res = await conn.db.listCollections({name: 'ModelAdditional'}).toArray()
 
 ## get all documents from collection
 ```javascript
+# With model
 const model = await conn.model(modelName, schema, collectionName)
 const documents = (await model.find({})).map(doc => doc._doc)
+
+# Without model
+const documents = await conn.db.collection('Apple').find().toArray()
 ```
