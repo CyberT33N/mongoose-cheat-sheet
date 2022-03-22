@@ -889,6 +889,9 @@ module.exports = function loadedAtPlugin(schema, options) {
           
           // You can access aswell other collections
           const collection = this.db.collection('collectionName')
+
+          // You can access aswell other models
+          const model = this.model('modelName')
           
           this._createdBy = author.sub;
           this._owner = author.sub;
