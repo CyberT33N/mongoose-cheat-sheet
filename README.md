@@ -881,6 +881,10 @@ module.exports = function loadedAtPlugin(schema, options) {
  // do something bevore the documents gets saved
   schema.pre('save', function(next) {
       try {
+          // Method #1
+          const authour = this.author
+
+          // Method #2 - Maybe not working
           const author = requestContext.get('request').author;
           
           // You can access aswell other collections
