@@ -893,6 +893,9 @@ module.exports = function loadedAtPlugin(schema, options) {
           // You can access aswell other models
           const model = this.model('modelName')
           
+          this.set('_createdBy', author.sub)
+
+          // This will mostly not work 
           this._createdBy = author.sub;
           this._owner = author.sub;
           this._groupOwner = author.group;
