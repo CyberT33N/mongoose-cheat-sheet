@@ -100,7 +100,8 @@ const createSchema = async () => {
 ```
 
 
-<br><br><br><br>
+<br><br>
+<br><br>
 
 
 
@@ -131,7 +132,11 @@ const res = await testModel.findOne({ "name": "abc" }).exec()
 ```
 
 
+
 <br><br>
+<br><br>
+
+
 
 #### Drop Database
 ```javascript
@@ -145,8 +150,32 @@ await conn.dropDatabase();
 
 
 
+<br><br>
+<br><br>
 
 
+
+
+#### readyState
+- Check if connection is still valid
+```javascript
+const conn = mongoose.createConnection('mongodb://localhost:27017/mydb');
+if (conn.readyState === conn.states.disconnected) { /* .. */ }
+```
+
+<br><br>
+<br><br>
+
+
+#### retry options
+- With Mongoose 6 you do not need useNewUrlParser & useUnifiedTopology anymore. It will be set by default.
+```javascript
+connectTimeoutMS=30000
+socketTimeoutMS=30000
+useNewUrlParser=true
+useUnifiedTopology=true
+keepAlive=1
+```
 
 
 
