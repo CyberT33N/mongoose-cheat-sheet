@@ -114,7 +114,11 @@ const createSchema = async () => {
 const mongoose = require('mongoose');
 const connOptions = {useNewUrlParser: true, useUnifiedTopology: true}
 
+// Mongose 5
 const conn = await mongoose.createConnection(uri, connOptions)
+
+// Mongoose 6
+// const conn = await mongoose.createConnection(uri, connOptions).asPromise()
 
 const testSchema = new mongoose.Schema({
     name: String
