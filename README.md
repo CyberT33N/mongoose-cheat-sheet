@@ -1618,3 +1618,87 @@ const documents = (await model.find({})).map(doc => doc._doc)
 # Without model
 const documents = await conn.db.collection('Apple').find().toArray()
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br>
+___________________________________________
+___________________________________________
+<br><br>
+
+
+# Migration
+
+<br><br>
+
+## Mongoose 5 to 6
+
+<br><br>
+
+### asPromise()
+- https://mongoosejs.com/docs/migrating_to_6.html#the-aspromise-method-for-connections
+```javascript
+const conn = await mongoose.createConnection(uri).asPromise()
+```
+
+<br><br>
+
+### Duplicate Query Execution
+. https://mongoosejs.com/docs/migrating_to_6.html#duplicate-query-execution
+```javascript
+// Results in 'Query was already executed' error, because technically this `find()` query executes twice.
+await Model.find({}, function(err, result) {});
+
+const q = Model.find();
+await q;
+await q.clone(); // Can `clone()` the query to allow executing the query again
+```
+
+
+<br><br>
+
+### Defaults
+- Mongoose Options useNewUrlParser, keepAlive & useUnifiedTopology are now default
+- The context option for queries has been removed. Now Mongoose always uses context = 'query'
