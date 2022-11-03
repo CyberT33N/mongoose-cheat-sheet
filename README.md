@@ -1483,7 +1483,7 @@ const res = await testModel.findOne({ "name": name })
 const data = { name: 'test' }
 
 const options = {
-    new: true // <-- Will return the updated doc
+    new: true, // <-- Will return the updated doc
     
     // If you use a custom validator you must enable those two options 
     runValidators: true, // <-- enables custom validator
