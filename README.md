@@ -222,9 +222,27 @@ keepAlive=1
 
 
 
+<br><br>
+___________________________________________
+___________________________________________
+<br><br>
 
 
 
+
+
+# Collection
+
+<br><br>
+<br><br>
+
+
+## .createCollection()
+```javascript
+await Model.createCollection()
+
+// [options.autoCreate=false] «Boolean» Set to true to make Mongoose automatically call createCollection() on every model created on this connection.
+```
 
 
 
