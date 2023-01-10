@@ -244,6 +244,13 @@ await Model.createCollection()
 // [options.autoCreate=false] «Boolean» Set to true to make Mongoose automatically call createCollection() on every model created on this connection.
 ```
 
+<br><br>
+
+
+## get all indexes from collection of Model
+```javascript
+const indexes = await Model.collection.getIndexes({full: true})
+```
 
 
 
