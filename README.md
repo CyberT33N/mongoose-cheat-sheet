@@ -1303,9 +1303,17 @@ ___________________________________________
 
 ## create new document
 ```javascript
-const Tank = mongoose.model('Tank', { size: 'string' });
-const small = new Tank({ size: 'small' });
-await small.save();
+const Tank = mongoose.model('Tank', { size: 'string', 'schedule': 'object' })
+const doc = new Tank({ size: 'small' })
+
+doc.size = 'big'
+
+await doc.save()
+
+// If you want to change nested properties you have to use this otherwhise doc.save() will not work and child properties of objects not get updated.. 
+doc.schedule.mode = 'activated'
+doc.markModified('schedule')
+await doc.save()
 ```
 
 <br><br>
