@@ -895,13 +895,13 @@ await Drink.findByName('LaCroix');
 
 
 
-<br><br><br><br>
+<br><br>
+<br><br>
 
 
 
 ## Plugins (https://mongoosejs.com/docs/plugins.html)
 ```javascript
-// loadedAt.js
 module.exports = function loadedAtPlugin(schema, options) {
   schema.virtual('loadedAt').
     get(function() { return this._loadedAt; }).
@@ -917,26 +917,28 @@ module.exports = function loadedAtPlugin(schema, options) {
       doc.loadedAt = now;
     }
   });
- 
- 
- 
-   // do something after the documents gets saved - method #2
-  schema.post("save", async function (doc, next) {
-    try {
-      let data = await doc
-        .model("User")
-        .findOneAndUpdate({ _id: doc._id }, { exampleIDField: "some ID you want to pass" });
-    } catch (error) {
-      console.log("get -> error", error);
-      next(error);
-    }
-  });
+}
+
+// game-schema.js
+const loadedAtPlugin = require('./loadedAt');
+const gameSchema = new Schema({ ... });
+gameSchema.plugin(loadedAtPlugin);
+
+// player-schema.js
+const loadedAtPlugin = require('./loadedAt');
+const playerSchema = new Schema({ ... });
+playerSchema.plugin(loadedAtPlugin);
+
+// You can check if the plugin was correctly loaded by checking the schema of the Model
+const Model = mongoose.model(modelName, mongooseSchema, modelName)
+console.log('Model.schema.plugins.loadedAtPlugin')
+```
 
 
- 
- 
- 
- // do something bevore the documents gets saved
+### pre Hook
+- Do something before the document gets saved
+```javascript
+module.exports = function loadedAtPlugin(schema, options) {
   schema.pre('save', function(next) {
       try {
           // Method #1
@@ -944,13 +946,20 @@ module.exports = function loadedAtPlugin(schema, options) {
 
           // Method #2 - Maybe not working
           const author = requestContext.get('request').author;
+
+          // Method #3
+          const author = this.get('author')
           
           // You can access aswell other collections
           const collection = this.db.collection('collectionName')
 
           // You can access aswell other models
           const model = this.model('modelName')
-          
+
+          // Get payload
+          const payload = this._update.$set
+
+          // Change value of property
           this.set('_createdBy', author.sub)
 
           // This will mostly not work 
@@ -964,45 +973,40 @@ module.exports = function loadedAtPlugin(schema, options) {
       }
   });
   
-  
-  
-    // method #1 - do something before doc gets updated - Not allow updating specific fields
-    schema.pre(['findOneAndUpdate'], async function(next) {
-        try {
-            const type = this.get('type')
-            const query = this.getQuery()
+  // Get query and search document for original state
+  // because you only have access to the body that update the doc and not to all properties of the updated doc from the db we must search it
+  schema.pre(['findOneAndUpdate'], async function(next) {
+      try {
+          const query = this.getQuery()
 
-            const doc =  await this.findOne(query)
+          // method 1
+          const doc =  await this.findOne(query)
 
-            if (type) {
-                this.set('type', doc.type)
-            }
+          // method 2
+          const docToUpdate = await this.model.findOne(this.getQuery())
 
-            next()
-        } catch (e) {
-            next(new BaseError(e))
-        }
-    })
+          // method 3
+           const schema = this;
+           const { newUpdate } = schema.getUpdate();
+           const queryConditions = schema._conditions
+      
+           if(newUpdate){
+             //some mutation magic
+             await schema.updateOne(queryConditions, {newUpdate:"modified data"}); 
+           }
 
-    
-   
-  // method #2 - do something before doc gets updated
+          // method 4
+          // const id = this.getQuery().$and[0]._id // maybe this works too this.getQuery()._id
+
+          next()
+      } catch (e) {
+          next(e)
+      }
+  })
+
+  // change field before updating
   schema.pre(['findOneAndUpdate', 'updateOne', 'update', 'updateMany'], async function(next) {
       try {
-        // because you only have access to the body that update the doc and not to all properties of the updated doc from the db we must search it
-        // method 1
-        const docToUpdate = await this.findOne(this.getQuery())
-        
-        // method 2
-        const docToUpdate = await this.model.findOne(this.getQuery())
-
-        // you can get the properties of the by using get or this.getQuery()
-        const htmlFragment = this.get('htmlFragment')
-
-        // In some cases this may work aswell
-        // const id = this.getQuery().$and[0]._id // maybe this works too this.getQuery()._id
-        
-        // change field before updating
         if (htmlFragment) {
             // method #1
             this.set('htmlFragment', 'new name')
@@ -1022,45 +1026,70 @@ module.exports = function loadedAtPlugin(schema, options) {
       } catch (e) {
           next(e)
       }
-   });
-   
-   
-   
-   // method #3  - do something before doc gets updated
-   schema.pre('findOneAndUpdate', async function(next){ 
-     const schema = this;
-     const { newUpdate } = schema.getUpdate();
-     const queryConditions = schema._conditions
+   })
+}
+```
 
-     if(newUpdate){
-       //some mutation magic
-       await schema.updateOne(queryConditions, {newUpdate:"modified data"}); 
-       next()
-     }
-     next()
-})
-};
+<br><br>
+<br><br>
 
-// game-schema.js
-const loadedAtPlugin = require('./loadedAt');
-const gameSchema = new Schema({ ... });
-gameSchema.plugin(loadedAtPlugin);
+### post Hook 
+- Do something after the documents was saved
+```javascript
+// loadedAt.js
+module.exports = function loadedAtPlugin(schema, options) {
+   // do something after the documents gets saved - method #2
+  schema.post("save", async function (doc, next) {
+    try {
+      let data = await doc
+        .model("User")
+        .findOneAndUpdate({ _id: doc._id }, { exampleIDField: "some ID you want to pass" });
+    } catch (error) {
+      console.log("get -> error", error);
+      next(error);
+    }
+  });
+}
+```
 
-// player-schema.js
-const loadedAtPlugin = require('./loadedAt');
-const playerSchema = new Schema({ ... });
-playerSchema.plugin(loadedAtPlugin);
 
-// You can check if the plugin was correctly loaded by checking the schema of the Model
-const Model = mongoose.model(modelName, mongooseSchema, modelName)
-console.log('Model.schema.plugins.loadedAtPlugin')
+
+<br><br>
+<br><br>
+
+### work with pre & post hook together
+- You can set properties in this in the pre hook and work later with it in the post hook
+```javascript
+yourSchema.pre(['findOneAndUpdate'], async function(next) {
+  // Dein pre-hook-Code hier
+  // Du kannst auf das zu aktualisierende Dokument mit this._update zugreifen
+
+  // Beispiel: Speichere das ursprüngliche Dokument vor dem Update
+  const originalDocument = await this.model.findOne(this.getQuery());
+
+  // Speichere das ursprüngliche Dokument im Hook-Objekt, um darauf im post-hook zugreifen zu können
+  this._originalDocument = originalDocument;
+
+  next();
+});
+
+yourSchema.post(['findOneAndUpdate'], async function(result, next) {
+  // Dein post-hook-Code hier
+  // Du kannst auf das aktualisierte Dokument mit this._update zugreifen
+
+  // Beispiel: Zugriff auf das ursprüngliche Dokument vor dem Update
+  const originalDocument = this._originalDocument;
+  console.log('Vor dem Update:', originalDocument);
+
+  next();
+});
 ```
 
 
 
 
-
-<br><br><br><br>
+<br><br>
+<br><br>
 
 
 
