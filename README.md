@@ -935,6 +935,10 @@ console.log('Model.schema.plugins.loadedAtPlugin')
 ```
 
 
+<br><br>
+<br><br>
+
+
 ### pre Hook
 - Do something before the document gets saved
 ```javascript
@@ -982,7 +986,7 @@ module.exports = function loadedAtPlugin(schema, options) {
           // method 1
           const doc =  await this.findOne(query)
 
-          // method 2
+          // method 2 - recommended
           const docToUpdate = await this.model.findOne(this.getQuery())
 
           // method 3
