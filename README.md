@@ -135,11 +135,30 @@ const resSave = await myDoc.save()
 const res = await testModel.findOne({ "name": "abc" }).exec()
 ```
 
+### show active connections
+```javascript
+// Create a mongoose connection using the given address and config
+const conn = await mongoose.createConnection(mongooseConnectString, this.mongoOptions).asPromise() 
+
+// Verwende die Admin API
+const admin = new mongoose.mongo.Admin(conn.db)
+
+// Erhalte Serverstatus
+const status = await admin.serverStatus()
+```
+
+
+
+
+
+
+
 
 
 <br><br>
 <br><br>
-
+<br><br>
+<br><br>
 
 
 #### Drop Database
