@@ -135,6 +135,8 @@ const resSave = await myDoc.save()
 const res = await testModel.findOne({ "name": "abc" }).exec()
 ```
 
+<br><br>
+
 ### show active connections
 ```javascript
 // Create a mongoose connection using the given address and config
@@ -147,8 +149,33 @@ const admin = new mongoose.mongo.Admin(conn.db)
 const status = await admin.serverStatus()
 ```
 
+<br><br>
 
+### Close connections after apps crash
+```javascript
+/**
+ * Cleans up resources and exits the process.
+ * @async
+ * @function cleanUp
+ * @returns {Promise<void>}
+ */
+const cleanUp = async() => {
+    const mt = new MongoMTConnection()
+    await mt.destroy()
+    await mongoose.connection.close()
+    process.exit(1)
+}
 
+process.on('uncaughtException', async e => {
+    console.error((new Date).toUTCString() + ' uncaughtException:', e.message)
+    console.error(e.stack)
+    await cleanUp()
+})
+
+;['exit', 'SIGINT', 'SIGUSR1', 'SIGUSR2', 'SIGTERM'].forEach((eventType) => {
+    process.on(eventType, cleanUp)
+})
+```
 
 
 
