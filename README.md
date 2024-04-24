@@ -1002,6 +1002,8 @@ module.exports = function loadedAtPlugin(schema, options) {
           
           // You can access aswell other collections
           const collection = this.db.collection('collectionName')
+          //  const collection = this.model.db.collection('collectionName')
+          //  const collection = this.model.db('anyDB').collection('collectionName')
 
           // You can access aswell other models
           const model = this.model('modelName')
