@@ -32,6 +32,47 @@ Mongoose Cheat Sheet with the most needed stuff..
 
 
 
+<br><br>
+___________________________________________
+___________________________________________
+<br><br>
+
+
+# Connection String
+
+## Change db name
+```typescript
+private updateConnectionString() {
+    const urlObj = new URL(this.connectionString)
+    urlObj.pathname = `/${this.dbName}`
+    const urlString = urlObj.toString()
+    const newString = urlString
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <br><br>
