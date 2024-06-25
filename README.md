@@ -1857,3 +1857,150 @@ await q.clone(); // Can `clone()` the query to allow executing the query again
 ### Defaults
 - Mongoose Options useNewUrlParser, keepAlive & useUnifiedTopology are now default
 - The context option for queries has been removed. Now Mongoose always uses context = 'query'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br>
+___________________________________________
+___________________________________________
+<br><br>
+
+
+# Helper
+
+## Singleton MongooseUtils
+```typscript
+// ==== DEPENDENCIES ====
+import _ from 'lodash'
+import mongoose, { ConnectOptions, Connection } from 'mongoose'
+import { BaseError } from 'error-manager-helper'
+
+class MongooseUtils {
+    // eslint-disable-next-line no-use-before-define
+    private static instance: MongooseUtils
+
+    private conn: mongoose.Connection | null
+    private connectionString: string
+
+    dbName: string
+
+    private constructor() {
+        this.dbName = ''
+        this.conn = null
+        this.connectionString = process.env.MONGODB_CONNECTION_STRING
+    }
+  
+    public static async getInstance(dbName: string): Promise<MongooseUtils>{
+        if (this.instance) {
+            this.instance.dbName = dbName
+            return this.instance
+        }
+
+        // Create instance
+        this.instance = new MongooseUtils()
+
+        // ==== ARGS ====
+        this.instance.dbName = dbName
+
+        // ==== INITIALIZATION ====
+        await this.instance.init()
+
+        return this.instance
+    }
+
+    private async getConnection(
+        dbName: string
+    ): Promise<mongoose.Connection> {
+        if (!this.conn || this.conn.name !== dbName) {
+            await this.init()
+        }
+
+        return this.conn!
+    }
+
+    private async init() {
+        if (_.isEmpty(this.conn)) {
+            try {
+                this.updateConnectionString()
+                this.conn = await mongoose.createConnection(this.connectionString).asPromise() as Connection
+            } catch (e: any) {
+                throw new BaseError('MongooseUtils() - Error while init connection with mongoose', e)
+            }
+        }
+    }
+
+    private updateConnectionString() {
+        const urlObj = new URL(this.connectionString)
+        urlObj.pathname = `/${this.dbName}`
+        const urlString = urlObj.toString()
+        this.connectionString = urlString
+    }
+
+    static createSchema(schema: object, name: string) {
+        const mongooseSchema = new mongoose.Schema(schema, {
+            collection: name
+        })
+
+        return mongooseSchema
+    }
+
+    public async createModel(
+        schema: object,
+        name: string,
+        dbName: string
+    ) {
+        const mongooseSchema = MongooseUtils.createSchema(schema, name)
+
+        const conn = await this.getConnection(dbName)
+        const Model = conn.model(name, mongooseSchema, name)
+        return Model
+    }
+}
+
+export default MongooseUtils
+```
