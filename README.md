@@ -87,6 +87,7 @@ ___________________________________________
 
 
 ## .connect()
+- Will be used for single connection
 
 ```javascript
 const mongoose = require('mongoose');
@@ -151,6 +152,8 @@ const createSchema = async () => {
 
 
 ## .createConnection()
+- will be used for multiple connections
+  - https://mongoosejs.com/docs/connections.html#multiple_connections 
 ```javascript
 const mongoose = require('mongoose');
 const connOptions = {useNewUrlParser: true, useUnifiedTopology: true}
