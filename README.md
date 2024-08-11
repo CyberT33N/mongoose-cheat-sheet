@@ -41,7 +41,16 @@ ___________________________________________
 ## Model
 - https://dev.to/ghostaram/how-to-create-mongoose-models-using-typescript-7hf
 ```typescript
-import { Model } from 'mongoose'
+import { Model } from 'mongoose
+
+interface IVehicle{
+    make: string
+    vehicle_model: string
+    manufacturer: string
+    design: string
+    year_sold: number
+}
+
 
 type VehicleModel = Model<IVehicle>
 
