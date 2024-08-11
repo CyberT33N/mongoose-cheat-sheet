@@ -41,7 +41,7 @@ ___________________________________________
 ## Model
 - https://dev.to/ghostaram/how-to-create-mongoose-models-using-typescript-7hf
 ```typescript
-import { Model } from 'mongoose
+import { Model, Schema } from 'mongoose
 
 interface IVehicle{
     make: string
@@ -50,7 +50,6 @@ interface IVehicle{
     design: string
     year_sold: number
 }
-
 
 type VehicleModel = Model<IVehicle>
 
