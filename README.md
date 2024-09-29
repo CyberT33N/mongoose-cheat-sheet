@@ -35,6 +35,9 @@ ___________________________________________
 
 # Typescript
 
+## Guides
+- https://mongoosejs.com/docs/typescript.html
+
 <br><br>
 <br><br>
 
