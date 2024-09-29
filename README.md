@@ -41,7 +41,7 @@ ___________________________________________
 <br><br>
 <br><br>
 
-## Model
+## Create Model
 - https://mongoosejs.com/docs/typescript.html#creating-your-first-document
 ```typescript
 import { Schema, model, connect } from 'mongoose';
@@ -79,6 +79,29 @@ async function run() {
   console.log(user.email); // 'bill@initech.com'
 }
 ```
+
+
+
+<br><br>
+<br><br>
+
+## Create Document
+```typescript
+import { HydratedDocument } from 'mongoose';
+
+const user: HydratedDocument<IUser> = new User({
+  name: 'Bill',
+  email: 'bill@initech.com',
+  avatar: 'https://i.imgur.com/dM7Thhn.png'
+});
+```
+
+
+
+
+
+
+
 
 <br><br>
 <br><br>
