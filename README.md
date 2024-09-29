@@ -42,31 +42,42 @@ ___________________________________________
 <br><br>
 
 ## Model
-- https://dev.to/ghostaram/how-to-create-mongoose-models-using-typescript-7hf
+- https://mongoosejs.com/docs/typescript.html#creating-your-first-document
 ```typescript
-import { Model, Schema } from 'mongoose'
+import { Schema, model, connect } from 'mongoose';
 
-interface IVehicle{
-    make: string
-    vehicle_model: string
-    manufacturer: string
-    design: string
-    year_sold: number
+// 1. Create an interface representing a document in MongoDB.
+interface IUser {
+  name: string;
+  email: string;
+  avatar?: string;
 }
 
-type VehicleModel = Model<IVehicle>
+// 2. Create a Schema corresponding to the document interface.
+const userSchema = new Schema<IUser>({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  avatar: String
+});
 
-const vehicleSchema = new Schema<IVehicle, VehicleModel>({})
+// 3. Create a Model.
+const User = model<IUser>('User', userSchema);
 
-const vehicleSchema: Schema = new Schema<IVehicle, VehicleModel>({
-    make: { type: String },
-    vehicle_model: { type: String },
-    manufacturer: { type: String },
-    design: { type: String }
-    year_sold: {type: Number }
-})
+run().catch(err => console.log(err));
 
-const Vehicle: VehicleModel = model<IVehicle, VehicleModel>('Vehicle', vehicleSchema)
+async function run() {
+  // 4. Connect to MongoDB
+  await connect('mongodb://127.0.0.1:27017/test');
+
+  const user = new User({
+    name: 'Bill',
+    email: 'bill@initech.com',
+    avatar: 'https://i.imgur.com/dM7Thhn.png'
+  });
+  await user.save();
+
+  console.log(user.email); // 'bill@initech.com'
+}
 ```
 
 <br><br>
