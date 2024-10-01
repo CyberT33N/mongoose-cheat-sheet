@@ -38,8 +38,68 @@ ___________________________________________
 ## Guides
 - https://mongoosejs.com/docs/typescript.html
 
+
+
+
 <br><br>
 <br><br>
+
+## Create Schema
+- https://dev.to/ghostaram/how-to-create-mongoose-models-using-typescript-7hf
+
+<br><br>
+
+### Without Model Type
+```typescript
+interface IVehicle {
+    name: string;
+    brand: string;
+    year: number;
+}
+
+const vehicleSchema = new mongoose.Schema<IVehicle>({
+    name: { type: String, required: true },
+    brand: { type: String, required: true },
+    year: { type: Number, required: true }
+});
+```
+
+<br><br>
+
+### With Model Type
+```typescript
+interface IVehicle {
+    name: string;
+    brand: string;
+    year: number;
+}
+
+interface VehicleModel extends mongoose.Model<IVehicle> {
+    // Zusätzliche Methoden, die spezifisch für VehicleModel sind
+    findByBrand(brand: string): Promise<IVehicle[]>;
+}
+
+const vehicleSchema = new mongoose.Schema<IVehicle, VehicleModel>({
+    name: { type: String, required: true },
+    brand: { type: String, required: true },
+    year: { type: Number, required: true }
+});
+```
+
+
+
+
+
+
+
+
+
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+
+
 
 ## Create Model
 - https://mongoosejs.com/docs/typescript.html#creating-your-first-document
@@ -103,6 +163,17 @@ const user: HydratedDocument<IUser> = new User({
 
 
 
+
+
+
+
+
+
+
+
+
+<br><br>
+<br><br>
 <br><br>
 <br><br>
 
