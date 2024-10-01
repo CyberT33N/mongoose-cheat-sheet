@@ -35,7 +35,9 @@ ___________________________________________
 
 # Typescript
 
-## Guides
+<details><summary>Click to expand..</summary>
+    
+# Guides
 - https://mongoosejs.com/docs/typescript.html
 
 
@@ -44,12 +46,8 @@ ___________________________________________
 <br><br>
 <br><br>
 
-## Create Schema
+# Schema
 - https://dev.to/ghostaram/how-to-create-mongoose-models-using-typescript-7hf
-
-<br><br>
-
-### Without Model Type
 ```typescript
 interface IVehicle {
     name: string;
@@ -64,31 +62,6 @@ const vehicleSchema = new mongoose.Schema<IVehicle>({
 });
 ```
 
-<br><br>
-
-### With Model Type
-```typescript
-interface IVehicle {
-    name: string;
-    brand: string;
-    year: number;
-}
-
-interface VehicleModel extends mongoose.Model<IVehicle> {
-    // Zusätzliche Methoden, die spezifisch für VehicleModel sind
-    findByBrand(brand: string): Promise<IVehicle[]>;
-}
-
-const vehicleSchema = new mongoose.Schema<IVehicle, VehicleModel>({
-    name: { type: String, required: true },
-    brand: { type: String, required: true },
-    year: { type: Number, required: true }
-});
-```
-
-
-
-
 
 
 
@@ -101,7 +74,7 @@ const vehicleSchema = new mongoose.Schema<IVehicle, VehicleModel>({
 
 
 
-## Create Model
+# Model
 - https://mongoosejs.com/docs/typescript.html#creating-your-first-document
 ```typescript
 import { Schema, model, connect } from 'mongoose';
@@ -145,7 +118,7 @@ async function run() {
 <br><br>
 <br><br>
 
-## Create Document
+# Document
 ```typescript
 import { HydratedDocument } from 'mongoose';
 
@@ -155,6 +128,441 @@ const user: HydratedDocument<IUser> = new User({
   avatar: 'https://i.imgur.com/dM7Thhn.png'
 });
 ```
+
+
+<br><br>
+<br><br>
+
+
+# Instance method
+- To define an instance method in TypeScript, create a new interface representing your instance methods. You need to pass that interface as the 3rd generic parameter to the Schema constructor and as the 3rd generic parameter to Model as shown below.
+- https://mongoosejs.com/docs/typescript/statics-and-methods.html
+```typescript
+import { Model, Schema, model } from 'mongoose';
+
+interface IUser {
+  firstName: string;
+  lastName: string;
+}
+
+// Put all user instance methods in this interface:
+interface IUserMethods {
+  fullName(): string;
+}
+
+// Create a new Model type that knows about IUserMethods...
+type UserModel = Model<IUser, {}, IUserMethods>;
+
+// And a schema that knows about IUserMethods
+const schema = new Schema<IUser, UserModel, IUserMethods>({
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true }
+});
+schema.method('fullName', function fullName() {
+  return this.firstName + ' ' + this.lastName;
+});
+
+const User = model<IUser, UserModel>('User', schema);
+
+const user = new User({ firstName: 'Jean-Luc', lastName: 'Picard' });
+const fullName: string = user.fullName(); // 'Jean-Luc Picard'
+```
+
+
+
+<br><br>
+<br><br>
+
+
+# Satics
+- Mongoose models do not have an explicit generic parameter for statics. If your model has statics, we recommend creating an interface that extends Mongoose's Model interface as shown below.
+- https://mongoosejs.com/docs/typescript/statics-and-methods.html
+```typescript
+import { Model, Schema, model } from 'mongoose';
+
+interface IUser {
+  name: string;
+}
+
+interface UserModel extends Model<IUser> {
+  myStaticMethod(): number;
+}
+
+const schema = new Schema<IUser, UserModel>({ name: String });
+schema.static('myStaticMethod', function myStaticMethod() {
+  return 42;
+});
+
+const User = model<IUser, UserModel>('User', schema);
+
+const answer: number = User.myStaticMethod(); // 42
+```
+
+
+
+
+
+
+<br><br>
+<br><br>
+
+
+## Create Statics and instance method
+- Mongoose models do not have an explicit generic parameter for statics. If your model has statics, we recommend creating an interface that extends Mongoose's Model interface as shown below.
+- https://mongoosejs.com/docs/typescript/statics-and-methods.html
+```typescript
+import { Model, Schema, HydratedDocument, model } from 'mongoose';
+
+interface IUser {
+  firstName: string;
+  lastName: string;
+}
+
+interface IUserMethods {
+  fullName(): string;
+}
+
+interface UserModel extends Model<IUser, {}, IUserMethods> {
+  createWithFullName(name: string): Promise<HydratedDocument<IUser, IUserMethods>>;
+}
+
+const schema = new Schema<IUser, UserModel, IUserMethods>({
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true }
+});
+schema.static('createWithFullName', function createWithFullName(name: string) {
+  const [firstName, lastName] = name.split(' ');
+  return this.create({ firstName, lastName });
+});
+schema.method('fullName', function fullName(): string {
+  return this.firstName + ' ' + this.lastName;
+});
+
+const User = model<IUser, UserModel>('User', schema);
+
+User.createWithFullName('Jean-Luc Picard').then(doc => {
+  console.log(doc.firstName); // 'Jean-Luc'
+  doc.fullName(); // 'Jean-Luc Picard'
+});
+```
+
+
+
+<br><br>
+<br><br>
+
+
+# Query Helper
+- Mongoose models do not have an explicit generic parameter for statics. If your model has statics, we recommend creating an interface that extends Mongoose's Model interface as shown below.
+- https://mongoosejs.com/docs/typescript/statics-and-methods.html
+
+- The following is an example of how query helpers work in JavaScript.
+```javascript
+ProjectSchema.query.byName = function(name) {
+  return this.find({ name: name });
+};
+const Project = mongoose.model('Project', ProjectSchema);
+
+// Works. Any Project query, whether it be `find()`, `findOne()`,
+// `findOneAndUpdate()`, `delete()`, etc. now has a `byName()` helper
+Project.find().where('stars').gt(1000).byName('mongoose');
+```
+
+<br><br>
+
+
+## Manually Typed Query Helpers 
+- In TypeScript, you can define query helpers using a separate query helpers interface. Mongoose's Model takes 3 generic parameters:
+
+    The DocType
+    a TQueryHelpers type
+    a TMethods type
+
+The 2nd generic parameter, TQueryHelpers, should be an interface that contains a function signature for each of your query helpers. Below is an example of creating a ProjectModel with a byName query helper.
+```typescript
+import { HydratedDocument, Model, QueryWithHelpers, Schema, model, connect } from 'mongoose';
+
+interface Project {
+  name?: string;
+  stars?: number;
+}
+
+interface ProjectQueryHelpers {
+  byName(name: string): QueryWithHelpers<
+    HydratedDocument<Project>[],
+    HydratedDocument<Project>,
+    ProjectQueryHelpers
+  >
+}
+
+type ProjectModelType = Model<Project, ProjectQueryHelpers>;
+
+const ProjectSchema = new Schema<
+  Project,
+  Model<Project, ProjectQueryHelpers>,
+  {},
+  ProjectQueryHelpers
+>({
+  name: String,
+  stars: Number
+});
+
+ProjectSchema.query.byName = function byName(
+  this: QueryWithHelpers<any, HydratedDocument<Project>, ProjectQueryHelpers>,
+  name: string
+) {
+  return this.find({ name: name });
+};
+
+// 2nd param to `model()` is the Model class to return.
+const ProjectModel = model<Project, ProjectModelType>('Project', ProjectSchema);
+
+run().catch(err => console.log(err));
+
+async function run(): Promise<void> {
+  await connect('mongodb://127.0.0.1:27017/test');
+
+  // Equivalent to `ProjectModel.find({ stars: { $gt: 1000 }, name: 'mongoose' })`
+  await ProjectModel.find().where('stars').gt(1000).byName('mongoose');
+}
+```
+
+
+
+
+<br><br>
+
+
+
+## Auto Typed Query Helpers 
+- Mongoose does support auto typed Query Helpers that it are supplied in schema options. Query Helpers functions can be defined as following:
+```typescript
+import { Schema, model } from 'mongoose';
+
+const ProjectSchema = new Schema({
+  name: String,
+  stars: Number
+}, {
+  query: {
+    byName(name: string) {
+      return this.find({ name });
+    }
+  }
+});
+
+const ProjectModel = model('Project', ProjectSchema);
+
+// Equivalent to `ProjectModel.find({ stars: { $gt: 1000 }, name: 'mongoose' })`
+await ProjectModel.find().where('stars').gt(1000).byName('mongoose');
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br>
+<br><br>
+
+
+
+# Populate
+- Mongoose does support auto typed Query Helpers that it are supplied in schema options. Query Helpers functions can be defined as following:
+```typescript
+import { Schema, model, Document, Types } from 'mongoose';
+
+// `Parent` represents the object as it is stored in MongoDB
+interface Parent {
+  child?: Types.ObjectId,
+  name?: string
+}
+const ParentModel = model<Parent>('Parent', new Schema({
+  child: { type: Schema.Types.ObjectId, ref: 'Child' },
+  name: String
+}));
+
+interface Child {
+  name: string;
+}
+const childSchema: Schema = new Schema({ name: String });
+const ChildModel = model<Child>('Child', childSchema);
+
+// Populate with `Paths` generic `{ child: Child }` to override `child` path
+ParentModel.findOne({}).populate<{ child: Child }>('child').orFail().then(doc => {
+  // Works
+  const t: string = doc.child.name;
+});
+```
+
+- An alternative approach is to define a PopulatedParent interface and use Pick<> to pull the properties you're populating.
+```typescript
+import { Schema, model, Document, Types } from 'mongoose';
+
+// `Parent` represents the object as it is stored in MongoDB
+interface Parent {
+  child?: Types.ObjectId,
+  name?: string
+}
+interface Child {
+  name: string;
+}
+interface PopulatedParent {
+  child: Child | null;
+}
+const ParentModel = model<Parent>('Parent', new Schema({
+  child: { type: Schema.Types.ObjectId, ref: 'Child' },
+  name: String
+}));
+const childSchema: Schema = new Schema({ name: String });
+const ChildModel = model<Child>('Child', childSchema);
+
+// Populate with `Paths` generic `{ child: Child }` to override `child` path
+ParentModel.findOne({}).populate<Pick<PopulatedParent, 'child'>>('child').orFail().then(doc => {
+  // Works
+  const t: string = doc.child.name;
+});
+```
+
+<br><br>
+- Mongoose also exports a PopulatedDoc type that helps you define populated documents in your document interface:
+  
+## PopulatedDoc
+```typescript
+import { Schema, model, Document, PopulatedDoc } from 'mongoose';
+
+// `child` is either an ObjectId or a populated document
+interface Parent {
+  child?: PopulatedDoc<Document<ObjectId> & Child>,
+  name?: string
+}
+const ParentModel = model<Parent>('Parent', new Schema({
+  child: { type: 'ObjectId', ref: 'Child' },
+  name: String
+}));
+
+interface Child {
+  name?: string;
+}
+const childSchema: Schema = new Schema({ name: String });
+const ChildModel = model<Child>('Child', childSchema);
+
+ParentModel.findOne({}).populate('child').orFail().then((doc: Parent) => {
+  const child = doc.child;
+  if (child == null || child instanceof ObjectId) {
+    throw new Error('should be populated');
+  } else {
+    // Works
+    doc.child.name.trim();
+  }
+});
+```
+- However, we recommend using the .populate<{ child: Child }> syntax from the first section instead of PopulatedDoc. Here's two reasons why:
+
+    You still need to add an extra check to check if child instanceof ObjectId. Otherwise, the TypeScript compiler will fail with Property name does not exist on type ObjectId. So using PopulatedDoc<> means you need an extra check everywhere you use doc.child.
+    In the Parent interface, child is a hydrated document, which makes it slow difficult for Mongoose to infer the type of child when you use lean() or toObject().
+
+
+
+
+
+
+<br><br>
+<br><br>
+
+
+## Sub Documents
+- Subdocuments are tricky in TypeScript. By default, Mongoose treats object properties in document interfaces as nested properties rather than subdocuments.
+```typescript
+// Setup
+import { Schema, Types, model, Model } from 'mongoose';
+
+// Subdocument definition
+interface Names {
+  _id: Types.ObjectId;
+  firstName: string;
+}
+
+// Document definition
+interface User {
+  names: Names;
+}
+
+// Models and schemas
+type UserModelType = Model<User>;
+const userSchema = new Schema<User, UserModelType>({
+  names: new Schema<Names>({ firstName: String })
+});
+const UserModel = model<User, UserModelType>('User', userSchema);
+
+// Create a new document:
+const doc = new UserModel({ names: { _id: '0'.repeat(24), firstName: 'foo' } });
+
+// "Property 'ownerDocument' does not exist on type 'Names'."
+// Means that `doc.names` is not a subdocument!
+doc.names.ownerDocument();
+```
+
+
+
+Mongoose provides a mechanism to override types in the hydrated document. Define a separate THydratedDocumentType and pass it as the 5th generic param to mongoose.Model<>. THydratedDocumentType controls what type Mongoose uses for "hydrated documents", that is, what await UserModel.findOne(), UserModel.hydrate(), and new UserModel() return.
+```typescript
+// Define property overrides for hydrated documents
+type THydratedUserDocument = {
+  names?: mongoose.Types.Subdocument<Names>
+}
+type UserModelType = mongoose.Model<User, {}, {}, {}, THydratedUserDocument>;
+
+const userSchema = new mongoose.Schema<User, UserModelType>({
+  names: new mongoose.Schema<Names>({ firstName: String })
+});
+const UserModel = mongoose.model<User, UserModelType>('User', userSchema);
+
+const doc = new UserModel({ names: { _id: '0'.repeat(24), firstName: 'foo' } });
+doc.names!.ownerDocument(); // Works, `names` is a subdocument!
+```
+
+<br><br>
+<br><br>
+
+
+##  Subdocument Arrays
+- You can also override arrays to properly type subdocument arrays using TMethodsAndOverrides:
+```typescript
+// Subdocument definition
+interface Names {
+  _id: Types.ObjectId;
+  firstName: string;
+}
+// Document definition
+interface User {
+  names: Names[];
+}
+
+// TMethodsAndOverrides
+type THydratedUserDocument = {
+  names?: Types.DocumentArray<Names>
+}
+type UserModelType = Model<User, {}, {}, {}, THydratedUserDocument>;
+
+// Create model
+const UserModel = model<User, UserModelType>('User', new Schema<User, UserModelType>({
+  names: [new Schema<Names>({ firstName: String })]
+}));
+
+const doc = new UserModel({});
+doc.names[0].ownerDocument(); // Works!
+```
+
+
 
 
 
@@ -228,6 +636,29 @@ class MongooseUtils {
     }
 }
 ```
+
+
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
