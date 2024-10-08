@@ -772,10 +772,6 @@ doc.names[0].ownerDocument(); // Works!
 
 
 
-<details><summary>Click to expand..</summary>
-
-
-
 
 
 
