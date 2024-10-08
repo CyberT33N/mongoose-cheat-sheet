@@ -2659,13 +2659,95 @@ ___________________________________________
     
 <br><br>
 
-## Test instance
+## Instance
 ```typescript
 const modelInstance = new Model()
 expect(modelInstance).toBeInstanceOf(mongoose.Model)
 ```
 
 
+<br><br>
+
+## createConnection
+
+<br><br>
+
+### Error Test
+```typescript
+/**
+ * Initializes the MongoDB connection.
+ * @throws BaseError if the connection fails.
+ * @returns {void} A Promise that resolves when the connection is established.
+ */
+private async init(): Promise<void> {
+    console.log('[ModelManager] - Attempting to connect to MongoDB...')
+
+    this.updateConnectionString()
+
+    try {
+        this.conn = await mongoose.createConnection(this.connectionString).asPromise()
+    } catch (e) {
+        throw new BaseError(
+            '[ModelManager] - Error while initializing connection with MongoDB',
+            e as Error
+        )
+    }
+}
+```
+```typescript
+ describe('init()', () => {
+    let updateConnectionStringStub: sinon.SinonStub
+
+    beforeEach(() => {
+        updateConnectionStringStub = sinon.stub(
+            MongooseUtils.prototype, 'updateConnectionString' as keyof MongooseUtils
+        ).resolves()
+    })
+
+    afterEach(() => {
+        updateConnectionStringStub.restore()
+    })
+
+    describe('[ERROR]', () => {
+        let createConnectionStub: sinon.SinonStub
+
+        const expectedErrorMessage = 'Connection error'
+
+        beforeEach(() => {
+            const error = new Error(expectedErrorMessage)
+
+            createConnectionStub = sinon.stub(mongoose, 'createConnection').returns({
+                asPromise: () => Promise.reject(error)
+            } as unknown as mongoose.Connection)
+        })
+
+        afterEach(() => {
+            createConnectionStub.restore()
+        })
+
+        it('should throw an error when initializing connection with mongoose fails', async () => {
+            try {
+                await mongooseUtils['init']()
+                assert.fail('This line should not be reached')
+            } catch (err) {
+                if (err instanceof BaseError) {
+                    const typedErr: IBaseError = err 
+                    expectTypeOf(typedErr).toEqualTypeOf<IBaseError>()
+
+                    expect(typedErr.error?.message).toBe(expectedErrorMessage)
+                    expect(typedErr.message).toBe(
+                        '[ModelManager] - Error while initializing connection with MongoDB'
+                    )
+
+                    return
+                }
+
+                assert.fail('This line should not be reached')
+            }
+        })
+    })
+})
+```
 
 </details>
 
