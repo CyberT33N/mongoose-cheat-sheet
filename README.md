@@ -40,7 +40,10 @@ ___________________________________________
 # Guides
 - https://mongoosejs.com/docs/typescript.html
 
+<br><br>
 
+# Examples projects
+- https://github.com/cybert33n/modelmanager
 
 
 <br><br>
@@ -61,6 +64,132 @@ const vehicleSchema = new mongoose.Schema<IVehicle>({
     year: { type: Number, required: true }
 });
 ```
+
+<br><br>
+
+## Create Interface from document schema
+- Can be achieved by using `mongoose.ObtainDocumentType`
+  - This will convert your js document type definiton into a interface which can be used to create your model or mongoose schmea
+```typescript
+import mongoose from 'mongoose'
+
+const schema = {
+    name: { 
+        type: String,
+        required: true,
+        unique: true,
+        index: true
+    },
+    decimals: { type: BigInt, required: true }
+}
+
+type TMongooseSchema = mongoose.ObtainDocumentType<typeof schema>
+
+const vehicleSchema = new mongoose.Schema<TMongooseSchema>(schema)
+```
+
+<br><br>
+
+## Store document schema in interface
+- Can be achieved by using `mongoose.SchemaDefinition`
+```typescript
+import mongoose from 'mongoose'
+
+const schema = {
+    name: { 
+        type: String,
+        required: true,
+        unique: true,
+        index: true
+    },
+    decimals: { type: BigInt, required: true }
+}
+
+type TMongooseSchema = mongoose.ObtainDocumentType<typeof schema>
+
+/**
+ * Interface representing the details of a Mongoose model.
+ * @template TSchema - The type of the document.
+ */
+export interface IModelCore<TMongooseSchema> {
+    /** The name of the model. */
+    modelName: string
+    /** The name of the database where the model is stored. */
+    dbName: string
+    /** The schema used for the model. */
+    schema: mongoose.SchemaDefinition<TMongooseSchema>
+}
+```
+
+
+
+
+
+
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+
+# Connection
+- https://github.com/Automattic/mongoose/blob/master/types/connection.d.ts
+
+<br><br>
+
+## createConnection
+- Can be achieved by using `mongoose.Connection`
+```typescript
+import mongoose } from 'mongoose'
+
+class MongooseUtils {
+    // MongoDB connection object
+    private conn: mongoose.Connection | null = null
+
+  /**
+     * Initializes the MongoDB connection.
+     * @throws BaseError if the connection fails.
+     * @returns {void} A Promise that resolves when the connection is established.
+     */
+    private async init(): Promise<void> {
+        console.log('[ModelManager] - Attempting to connect to MongoDB...')
+
+        this.updateConnectionString()
+
+        try {
+            this.conn = await mongoose.createConnection(this.connectionString).asPromise()
+        } catch (e) {
+            throw new BaseError(
+                '[ModelManager] - Error while initializing connection with MongoDB',
+                e as Error
+            )
+        }
+    }
+}
+```
+
+
+<br><br>
+
+## connect
+```typescript
+import mongoose, { ConnectOptions, Connection } from 'mongoose'
+
+class MongooseUtils {
+    // eslint-disable-next-line no-use-before-define
+    private static instance: MongooseUtils
+    private conn: mongoose.Connection
+
+    public async createMConn(
+        name: string
+    ) {
+        this.conn = await mongoose.connect(connectionString, { dbName } as ConnectOptions)
+    }
+}
+```
+
+
+
+
 
 
 
@@ -112,6 +241,44 @@ async function run() {
   console.log(user.email); // 'bill@initech.com'
 }
 ```
+
+<br><br>
+
+## Store mongoose model in interface
+```typescript
+/**
+ * Interface representing a Mongoose model along with additional metadata.
+ * @template TSchema - The type of the document.
+ */
+export interface IModel<TSchema>  {
+    /** The Mongoose Model instance. */
+    Model: mongoose.Model<TSchema>
+}
+
+interface IVehicle {
+    name: string;
+    brand: string;
+    year: number;
+}
+
+const vehicleSchema = new mongoose.Schema<IVehicle>({
+    name: { type: String, required: true },
+    brand: { type: String, required: true },
+    year: { type: Number, required: true }
+});
+
+const Model = model<vehicleSchema>('Vehicle', vehicleSchema);
+
+const obj: IModel<IVehicle> = { Model }
+```
+
+
+
+
+
+
+
+
 
 
 
@@ -579,63 +746,6 @@ doc.names[0].ownerDocument(); // Works!
 
 
 
-
-<br><br>
-<br><br>
-<br><br>
-<br><br>
-
-## Connection
-- https://github.com/Automattic/mongoose/blob/master/types/connection.d.ts
-
-<br><br>
-
-### createConnection
-```typescript
-import mongoose, { ConnectOptions, Connection } from 'mongoose'
-
-class MongooseUtils {
-    // eslint-disable-next-line no-use-before-define
-    private static instance: MongooseUtils
-    private conn: mongoose.Connection | null
-    private connectionString: string
-
-    private constructor() {
-        this.conn = null
-        this.connectionString = process.env.MONGODB_CONNECTION_STRING
-    }
-
-    private async init() {
-        if (_.isEmpty(this.conn)) {
-            try {
-                this.conn = await mongoose.createConnection(this.connectionString).asPromise() as Connection
-            } catch (e: any) {
-                throw new BaseError('MongooseUtils() - Error while init connection with mongoose', e)
-            }
-        }
-    }
-}
-```
-
-
-<br><br>
-
-### connect
-```typescript
-import mongoose, { ConnectOptions, Connection } from 'mongoose'
-
-class MongooseUtils {
-    // eslint-disable-next-line no-use-before-define
-    private static instance: MongooseUtils
-    private conn: mongoose.Connection
-
-    public async createMConn(
-        name: string
-    ) {
-        this.conn = await mongoose.connect(connectionString, { dbName } as ConnectOptions)
-    }
-}
-```
 
 
 </details>
