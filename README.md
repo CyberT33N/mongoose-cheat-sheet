@@ -2245,12 +2245,12 @@ yourSchema.post(['findOneAndUpdate'], async function(result, next) {
 
 
 
-
+<br><br>
 <br><br>
 ___________________________________________
 ___________________________________________
 <br><br>
-
+<br><br>
 
 # Document
 
@@ -2638,6 +2638,36 @@ const documents = await conn.db.collection('Apple').find().toArray()
 
 
 
+
+
+
+
+
+
+
+
+<br><br>
+<br><br>
+___________________________________________
+___________________________________________
+<br><br>
+<br><br>
+
+# Testing
+
+<details><summary>Click to expand..</summary>
+    
+<br><br>
+
+## Test instance
+```typescript
+const modelInstance = new Model()
+expect(modelInstance).toBeInstanceOf(mongoose.Model)
+```
+
+
+
+</details>
 
 
 
