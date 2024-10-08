@@ -772,6 +772,7 @@ doc.names[0].ownerDocument(); // Works!
 
 
 
+<details><summary>Click to expand..</summary>
 
 
 
@@ -788,25 +789,6 @@ doc.names[0].ownerDocument(); // Works!
 
 
 
-
-
-<br><br>
-___________________________________________
-___________________________________________
-<br><br>
-
-
-# Connection String
-
-## Change db name
-```typescript
-private updateConnectionString() {
-    const urlObj = new URL(this.connectionString)
-    urlObj.pathname = `/${this.dbName}`
-    const urlString = urlObj.toString()
-    const newString = urlString
-}
-```
 
 
 
@@ -841,11 +823,33 @@ ___________________________________________
 
 # Connection
 
+<details><summary>Click to expand..</summary>
+    
 <br><br>
 
 
+## Connection String
+    
+<br><br>
+
+### Change db name
+```typescript
+private updateConnectionString() {
+    const urlObj = new URL(this.connectionString)
+    urlObj.pathname = `/${this.dbName}`
+    const urlString = urlObj.toString()
+    const newString = urlString
+}
+```
+
+    
+<br><br>
+<br><br>
+
 ## .connect()
 - Will be used for single connection
+
+<details><summary>Click to expand..</summary>
 
 ```javascript
 const mongoose = require('mongoose');
@@ -898,6 +902,8 @@ const createSchema = async () => {
 }
 
 ```
+</details>
+
 
 
 <br><br>
@@ -911,7 +917,10 @@ const createSchema = async () => {
 
 ## .createConnection()
 - will be used for multiple connections
-  - https://mongoosejs.com/docs/connections.html#multiple_connections 
+  - https://mongoosejs.com/docs/connections.html#multiple_connections
+ 
+<details><summary>Click to expand..</summary>
+    
 ```javascript
 const mongoose = require('mongoose');
 const connOptions = {useNewUrlParser: true, useUnifiedTopology: true}
@@ -950,6 +959,11 @@ const admin = new mongoose.mongo.Admin(conn.db)
 // Erhalte Serverstatus
 const status = await admin.serverStatus()
 ```
+
+</details>
+
+
+
 
 <br><br>
 
@@ -1030,6 +1044,7 @@ keepAlive=1
 ```
 
 
+</details>
 
 
 
@@ -1071,10 +1086,11 @@ keepAlive=1
 
 
 <br><br>
+<br><br>
 ___________________________________________
 ___________________________________________
 <br><br>
-
+<br><br>
 
 
 
@@ -1103,11 +1119,32 @@ const indexes = await Model.collection.getIndexes({full: true})
 
 
 
-<br><br>
-___________________________________________
-___________________________________________
-<br><br>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br>
+<br><br>
+___________________________________________
+___________________________________________
+<br><br>
+<br><br>
 
 # Shell
 
@@ -1247,16 +1284,16 @@ var id = mongoose.Types.ObjectId('4edd40c86762e0fb12000003');
 
 
 
-
+<br><br>
 <br><br>
 ___________________________________________
 ___________________________________________
 <br><br>
-
+<br><br>
 
 # Schema
 
-
+<details><summary>Click to expand..</summary>
 
 
 
@@ -1735,6 +1772,162 @@ await Drink.findByName('LaCroix');
 
 
 
+<br><br>
+<br><br>
+
+
+
+## optimisticConcurrency (https://mongoosejs.com/docs/guide.html#optimisticConcurrency)
+- Optimistic concurrency is a strategy to ensure the document you're updating didn't change between when you loaded it using find() or findOne(), and when you update it using save().
+```javascript
+const Product = mongoose.model('Product', Schema({
+  name: String
+}, { optimisticConcurrency: true }));
+
+// saves with __v = 0
+let product = await new Product({ name: 'apple pie' }).save();
+
+// query a copy of the document for later (__v = 0)
+let oldProduct = await Product.findById(product._id);
+
+// increments to __v = 1
+product.name = 'mince pie';
+product = await product.save();
+
+// throws an error due to __v not matching the DB version
+oldProduct.name = 'blueberry pie';
+oldProduct = await oldProduct.save();
+```
+
+
+<br><br><br><br>
+
+
+## create new schema with specific collection name
+- For default mongoose will add the letter s to your collection and write everything lowercase. To force your own collection name you can do this:
+```javascript
+var dataSchema = new Schema({..}, { collection: 'data' })
+
+// or 
+
+var collectionName = 'actor'
+var M = mongoose.model('Actor', schema, collectionName);
+```
+<br><br>
+
+
+## timestamps (https://mongoosejs.com/docs/guide.html#timestamps)
+- The timestamps option tells mongoose to assign createdAt and updatedAt fields to your schema. The type assigned is Date. By default, the names of the fields are createdAt and updatedAt. Customize the field names by setting timestamps.createdAt and timestamps.updatedAt.
+```javascript
+var mySchema = new mongoose.Schema({name: String}, {timestamps: true});
+```
+
+
+
+
+
+
+<br><br>
+
+
+## unique
+- We must use .createIndexes() on the model or createIndex in the connection options. Otherwhise there is problem without the unique verification when you not drop the collection before.
+```javascript
+const uri = 'mongodb://xxx:xxx@127.0.0.1:27017/test_project1?authSource=admin'
+const connOptions = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}
+
+const mongoose = require('mongoose')
+
+const mongodbUri = require('mongodb-uri')
+const MongoClient = require('mongodb').MongoClient
+const client = new MongoClient(uri, connOptions)
+let uriObj = mongodbUri.parse(uri)
+
+/**
+ *
+ * @returns {Promise<void>}
+ */
+const dropTestDbs = async () => {
+    try {
+        const conn = await client.connect()
+        const dbs = await conn.db().admin().listDatabases()
+
+        for(const db of dbs.databases) {
+            const dbName = db.name
+
+            if (dbName.includes('test')) {
+                uriObj.database = dbName
+                const uri = mongodbUri.format(uriObj)
+
+                const client = new MongoClient(uri, connOptions)
+                const conn = await client.connect()
+
+                await conn.db().dropDatabase()
+            }
+        }
+    } catch (e) {
+        throw new Error(`Can not drop test databases - Error: ${e}`)
+    }
+}
+
+
+const sleep = async timeout => new Promise(resolve => setTimeout(resolve, timeout))
+
+const main = async () => {
+    await dropTestDbs()
+
+    await mongoose.connect(uri, connOptions)
+
+    const testSchema = new mongoose.Schema({
+        name: {
+            type: String,
+            unique: true,
+            required: true
+        }
+    }, { collection: 'test' })
+
+
+    const Model = mongoose.model('test', testSchema)
+    Model.createIndexes();
+    
+    // Method #2
+    // Model.db.collection('test').createIndex({name:1}, {unique:true})
+
+    await Model.create({ "name": "test1" })
+    
+    // will throw error
+    await Model.create({ "name": "test1" })
+}
+
+main().catch(e => console.log(e))
+```
+
+
+
+
+
+
+<details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1745,10 +1938,15 @@ await Drink.findByName('LaCroix');
 
 <br><br>
 <br><br>
+__________________________________________
+__________________________________________
 
-
+<br><br>
+<br><br>
 
 ## Plugins (https://mongoosejs.com/docs/plugins.html)
+<details><summary>Click to expand..</summary>
+    
 ```javascript
 module.exports = function loadedAtPlugin(schema, options) {
   schema.virtual('loadedAt').
@@ -1939,141 +2137,19 @@ yourSchema.post(['findOneAndUpdate'], async function(result, next) {
 });
 ```
 
-
-
-
-<br><br>
-<br><br>
-
-
-
-## optimisticConcurrency (https://mongoosejs.com/docs/guide.html#optimisticConcurrency)
-- Optimistic concurrency is a strategy to ensure the document you're updating didn't change between when you loaded it using find() or findOne(), and when you update it using save().
-```javascript
-const Product = mongoose.model('Product', Schema({
-  name: String
-}, { optimisticConcurrency: true }));
-
-// saves with __v = 0
-let product = await new Product({ name: 'apple pie' }).save();
-
-// query a copy of the document for later (__v = 0)
-let oldProduct = await Product.findById(product._id);
-
-// increments to __v = 1
-product.name = 'mince pie';
-product = await product.save();
-
-// throws an error due to __v not matching the DB version
-oldProduct.name = 'blueberry pie';
-oldProduct = await oldProduct.save();
-```
-
-
-<br><br><br><br>
-
-
-## create new schema with specific collection name
-- For default mongoose will add the letter s to your collection and write everything lowercase. To force your own collection name you can do this:
-```javascript
-var dataSchema = new Schema({..}, { collection: 'data' })
-
-// or 
-
-var collectionName = 'actor'
-var M = mongoose.model('Actor', schema, collectionName);
-```
-<br><br>
-
-
-## timestamps (https://mongoosejs.com/docs/guide.html#timestamps)
-- The timestamps option tells mongoose to assign createdAt and updatedAt fields to your schema. The type assigned is Date. By default, the names of the fields are createdAt and updatedAt. Customize the field names by setting timestamps.createdAt and timestamps.updatedAt.
-```javascript
-var mySchema = new mongoose.Schema({name: String}, {timestamps: true});
-```
+<details>
 
 
 
 
 
 
-<br><br>
 
 
-## unique
-- We must use .createIndexes() on the model or createIndex in the connection options. Otherwhise there is problem without the unique verification when you not drop the collection before.
-```javascript
-const uri = 'mongodb://xxx:xxx@127.0.0.1:27017/test_project1?authSource=admin'
-const connOptions = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}
-
-const mongoose = require('mongoose')
-
-const mongodbUri = require('mongodb-uri')
-const MongoClient = require('mongodb').MongoClient
-const client = new MongoClient(uri, connOptions)
-let uriObj = mongodbUri.parse(uri)
-
-/**
- *
- * @returns {Promise<void>}
- */
-const dropTestDbs = async () => {
-    try {
-        const conn = await client.connect()
-        const dbs = await conn.db().admin().listDatabases()
-
-        for(const db of dbs.databases) {
-            const dbName = db.name
-
-            if (dbName.includes('test')) {
-                uriObj.database = dbName
-                const uri = mongodbUri.format(uriObj)
-
-                const client = new MongoClient(uri, connOptions)
-                const conn = await client.connect()
-
-                await conn.db().dropDatabase()
-            }
-        }
-    } catch (e) {
-        throw new Error(`Can not drop test databases - Error: ${e}`)
-    }
-}
 
 
-const sleep = async timeout => new Promise(resolve => setTimeout(resolve, timeout))
-
-const main = async () => {
-    await dropTestDbs()
-
-    await mongoose.connect(uri, connOptions)
-
-    const testSchema = new mongoose.Schema({
-        name: {
-            type: String,
-            unique: true,
-            required: true
-        }
-    }, { collection: 'test' })
 
 
-    const Model = mongoose.model('test', testSchema)
-    Model.createIndexes();
-    
-    // Method #2
-    // Model.db.collection('test').createIndex({name:1}, {unique:true})
-
-    await Model.create({ "name": "test1" })
-    
-    // will throw error
-    await Model.create({ "name": "test1" })
-}
-
-main().catch(e => console.log(e))
-```
 
 
 
@@ -2182,6 +2258,8 @@ ___________________________________________
 
 # Document
 
+<details><summary>Click to expand..</summary>
+    
 <br><br>
 
 ## create new document
@@ -2223,7 +2301,7 @@ const doc = await Model.findByIdAndUpdate(statisticsId, query, {new: true})
 ```
 
 
-
+</details>
 
 
 
@@ -2274,6 +2352,8 @@ ___________________________________________
 
 
 # Model
+<details><summary>Click to expand..</summary>
+    
 ```javascript
 const testSchema = new mongoose.Schema({
     name: String
@@ -2439,7 +2519,7 @@ for (const model in mongoose.models) {
 ```
 
 
-
+</details>
 
 
 
@@ -2578,12 +2658,12 @@ const documents = await conn.db.collection('Apple').find().toArray()
 
 
 
-
+<br><br>
 <br><br>
 ___________________________________________
 ___________________________________________
 <br><br>
-
+<br><br>
 
 # Migration
 
@@ -2672,96 +2752,10 @@ ___________________________________________
 <br><br>
 
 
-# Helper
+# Dependencies
 
-## Singleton MongooseUtils
-```typscript
-// ==== DEPENDENCIES ====
-import _ from 'lodash'
-import mongoose, { ConnectOptions, Connection } from 'mongoose'
-import { BaseError } from 'error-manager-helper'
+<br><br>
 
-class MongooseUtils {
-    // eslint-disable-next-line no-use-before-define
-    private static instance: MongooseUtils
+## ModelManager
+- https://github.com/cybert33n/modelmanager
 
-    private conn: mongoose.Connection | null
-    private connectionString: string
-
-    dbName: string
-
-    private constructor() {
-        this.dbName = ''
-        this.conn = null
-        this.connectionString = process.env.MONGODB_CONNECTION_STRING
-    }
-  
-    public static async getInstance(dbName: string): Promise<MongooseUtils>{
-        if (this.instance) {
-            this.instance.dbName = dbName
-            return this.instance
-        }
-
-        // Create instance
-        this.instance = new MongooseUtils()
-
-        // ==== ARGS ====
-        this.instance.dbName = dbName
-
-        // ==== INITIALIZATION ====
-        await this.instance.init()
-
-        return this.instance
-    }
-
-    private async getConnection(
-        dbName: string
-    ): Promise<mongoose.Connection> {
-        if (!this.conn || this.conn.name !== dbName) {
-            await this.init()
-        }
-
-        return this.conn!
-    }
-
-    private async init() {
-        if (_.isEmpty(this.conn)) {
-            try {
-                this.updateConnectionString()
-                this.conn = await mongoose.createConnection(this.connectionString).asPromise() as Connection
-            } catch (e: any) {
-                throw new BaseError('MongooseUtils() - Error while init connection with mongoose', e)
-            }
-        }
-    }
-
-    private updateConnectionString() {
-        const urlObj = new URL(this.connectionString)
-        urlObj.pathname = `/${this.dbName}`
-        const urlString = urlObj.toString()
-        this.connectionString = urlString
-    }
-
-    static createSchema(schema: object, name: string) {
-        const mongooseSchema = new mongoose.Schema(schema, {
-            collection: name
-        })
-
-        return mongooseSchema
-    }
-
-    public async createModel(
-        schema: object,
-        name: string,
-        dbName: string
-    ) {
-        const mongooseSchema = MongooseUtils.createSchema(schema, name)
-
-        const conn = await this.getConnection(dbName)
-        const Model = conn.model(name, mongooseSchema, name)
-        return Model
-    }
-}
-
-export default MongooseUtils
-```
