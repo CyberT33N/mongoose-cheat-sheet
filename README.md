@@ -2668,6 +2668,46 @@ expect(modelInstance).toBeInstanceOf(mongoose.Model)
 
 <br><br>
 
+## document
+
+<br><br>
+
+### Error Test
+
+<br><br>
+
+#### ValidationError
+```typescript
+ describe('[ERROR]', () => {
+    it('should validate schema and should not allow to create doc', async() => {
+        const { modelName, schema } = modelDetails
+    
+        type TMongooseSchema = mongoose.ObtainDocumentType<typeof schema>
+        const Model = await mongooseUtils.createModel<TMongooseSchema>(schema, modelName)
+
+        // Should throw an error when trying to create a document
+        try {
+            const doc = new Model({ notValid: true })
+            await doc.save()
+
+            assert.fail('This line should not be reached')
+        } catch (err) {
+            if (err instanceof mongoose.Error.ValidationError) {
+                expect(err.errors.name.message).toEqual('Path `name` is required.')
+                expect(err.errors.decimals.message).toEqual('Path `decimals` is required.')
+                return
+            }
+
+            assert.fail('This line should not be reached')
+        }
+    })
+})
+```
+
+
+
+<br><br>
+
 ## createConnection
 
 <br><br>
@@ -2750,6 +2790,35 @@ private async init(): Promise<void> {
 ```
 
 </details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
