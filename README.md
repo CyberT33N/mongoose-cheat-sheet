@@ -296,6 +296,23 @@ const user: HydratedDocument<IUser> = new User({
 });
 ```
 
+## Store different document types in object
+```typescript
+/**
+ * @property {(mongoose.Document<unknown> & Required<{ _id: unknown }>) | null} doc - 
+ *    The inserted Mongoose document instance, or null if not available.
+ * @property {(mongoose.FlattenMaps<unknown> & Required<{ _id: unknown }>) | null} docLean - 
+ *    The lean version of the inserted document, or null if not available.
+ * @property {{ [x: string]: any } & Required<{ _id: unknown }> | undefined} docToObject - 
+ *    Plain JavaScript object representation of the inserted document.
+ */
+export interface IFixtureInserted {
+    doc: (mongoose.Document<unknown> & Required<{ _id: unknown; }>) | null
+    docLean: (mongoose.FlattenMaps<unknown> & Required<{ _id: unknown; }>) | null
+    docToObject: ({ [x: string]: any; } & Required<{ _id: unknown; }>) | undefined
+}
+```
+
 
 <br><br>
 <br><br>
